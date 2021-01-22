@@ -39,17 +39,7 @@ class Room {
     }
 
 	runChecks(message) {
-		let now = Date.now();
-		if (this.repeat) {
-			let diff = (now - this.repeat.last) / 60000;
-			this.repeat.msgs += 1;
-			if (this.repeat.msgs >= this.repeat.minmsg && diff >= this.repeat.mintime) {
-				this.repeat.last = now;
-				this.repeat.msgs = 0;
-				this.send(this.repeat.message);
-				this.saveSettings()
-			}
-		}
+		// Nothing to see here atm
 	}
 
     leave(room) {

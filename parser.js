@@ -35,7 +35,6 @@ bot.on('c', (parts) => {
     if (Rooms[i].tournament && !Rooms[i].tournament.started) Rooms[i].tournament.checkstart();    
     }
     Rooms[room].runChecks(message);
-    Monitor.monitor(user.name, message);
     logger.emit('chat', Utils.getRoom(parts[0]), user.name, message);
     if (message.startsWith('/log') && Rooms[room].settings.autohide) {
         if (message.includes("was muted by")) {
