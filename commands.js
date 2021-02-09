@@ -14,6 +14,7 @@ let commands = {
 		return room.send(`**${room.lasttour[1]}** ${ago} minute${ago === 1 ? '' : 's'} ago.`);
 	},
     mail: function(room, user, args, val) {
+        if (!user.can(" ")) return;
         let target = args[0];
         let targetid = toId(target);
         let msg = val.substring(target.length + 1).trim();

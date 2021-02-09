@@ -75,7 +75,8 @@ class Room {
             Users[id].rename(newname);
         }
         Utils.ObjectRename(this.users, oldname, id);
-        Users[id].rooms[this.id] = rank;    
+        Users[id].rooms[this.id] = rank;
+        Users[id].rank = rank;
     }
     
     can(user, rank) {

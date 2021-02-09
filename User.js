@@ -1,7 +1,9 @@
 class User {
     constructor(name) {
         this.rooms = {};
-        this.name = name.substring(1);
+        this.name = name.slice(1);
+        // Rank is only used to check if someone's locked or not, to prevent them using the mail feature.
+        this.rank = name.slice(0, 1);
         this.id = toId(name);
         this.checkmail();
     }
@@ -59,6 +61,7 @@ class User {
     
     can(room, rank) {
     	if (this.id === "staff") return true;
+        if (room === " ") return this.rank !== "‽"; 
         if (!this.rooms[room] && room !== this) return false;
         if (Config.devs.indexOf(this.id) !== -1) return true;
         if (rank === "all") return false;
