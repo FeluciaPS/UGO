@@ -1,3 +1,6 @@
+const points = require("./points.js");
+const { toId } = require("./utils.js");
+
 bot.on('challstr', function(parts) {
     require("./login.js")(parts[2], parts[3])
 });
@@ -82,11 +85,12 @@ bot.on('pm', (parts) => {
 
 bot.on('j', (parts) => {
     let room = Utils.getRoom(parts[0]);
-    let p = parts[2].substring(1).split("@")
+    let p = parts[2].substring(1).split("@");
     let user = parts[2].substring(0, 1) + p[0];
     console.log(user);
     if (!Users[toId(user)]) Users.add(user);
     Users[toId(user)].join(room, user);
+    if (points.names[toId(user)]) points.names[toId(user)] = Users[toId(user)].name;
 });
 
 bot.on('l', (parts) => {
@@ -157,6 +161,7 @@ bot.on('init', (parts, data) => {
     let room = Utils.getRoom(parts[0]);
     logger.emit('log', 'Joined ' + room);
     Rooms.add(room);
+    if (room === Config.hubroom) points.room = Rooms[room];
     parts = data.split("\n");
     for (let l in parts) {
         let line = parts[l];
