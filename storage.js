@@ -5,7 +5,7 @@ const FS = require('fs');
 let ioStatus = {};
 const PATH = 'storage';
 
-if (!FS.existsSync(PATH)) FS.mkdir(PATH);
+if (!FS.existsSync(PATH)) FS.mkdirSync(PATH);
 
 module.exports = {
     save: function(filename, data) {

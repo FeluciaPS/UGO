@@ -10,18 +10,27 @@ let getESTDate = function () {
     return new Date(est);
 }
 
+let getRoomName = function(roomid) {
+    for (let i of Config.GameRooms) {
+        if (toId(i) === roomid) return i;
+    }
+    return roomid;
+}
+
+let escape = require('html-escape');
 const storage = require('./storage.js');
+const { toId } = require('./utils.js');
 
 
-const pointcap = 75;
+const pointcap = 999999999;
 const spotlights = {
     1: "Battle Dome",
     2: "Mafia",
     3: "Scavengers",
     4: "Survivor",
     5: "Game Corner",
-    8: "Trivia",
-    9: "Battle Dome",
+    8: "Battle Dome",
+    9: "Trivia",
     10: "Mafia",
     11: "Scavengers",
     12: "Survivor",
@@ -33,12 +42,30 @@ const spotlights = {
 }
 
 // Max HP for gamers
-const maxHP = 100000;
+const maxHP = 300000;
 
 let day = new Date(Date.now()).getDate();
 
 module.exports = {
     room: false,
+    populate: function () {
+        for (let i = 1; i < 150; i++) {
+            for (let x = 1; x < 150; x++) {
+                let username = `Random User ${i}`;
+                let userid = toId(username);
+                let roomid = toId(Config.GameRooms[Math.floor(Math.random() * Config.GameRooms.length)]);
+                let amount = Math.random() * 10 - 7;
+                if (amount < 0) amount = 0;
+                if (!this.points[roomid][userid]) {
+                    this.points[roomid][userid] = 0;
+                }
+                this.points[roomid][userid] += Math.floor(amount);
+                console.log(`${amount} points for ${userid} in ${roomid}`);
+                this.names[userid] = username;
+            }
+        }
+        this.save();
+    },
     load: function () {
         this.names = storage.load('names.json');
         this.points = {}
@@ -47,11 +74,11 @@ module.exports = {
             this.points[toId(i)] = storage.load(`${toId(i)}.json`);
             this.daypoints[toId(i)] = storage.load(`${toId(i)}-day.json`);
         }
-        this.bosshp = storage.load('bosshp.json').hp
+        this.bosshp = storage.load('bosshp.json').hp;
     },
-    save: function(room = false) {
+    save: function(roomid = false) {
         for (let i of Config.GameRooms) {
-            if (!room || toId(i) === toId(room)) {
+            if (!roomid || toId(i) === toId(roomid)) {
                 storage.save(`${toId(i)}.json`, this.points[toId(i)]);
                 storage.save(`${toId(i)}-day.json`, this.daypoints[toId(i)]);
             }
@@ -65,45 +92,260 @@ module.exports = {
         }
         this.save();
     },
-    addpoints: function (points, users, room) {
-        if (!this.room) return false;
-        if (typeof users === "string") users = users.split(',');
+    addtrivia: function(data) {
+        data = data.replace("The scores for the last Trivia game are: ", "").split(', ').map(x => [x.split(" ")[0], toId(x.split(" ")[1])]);
+        let spotlight = "trivia" === toId(spotlights[day]);
 
-        if (this.bosshp === "undefined") this.bosshp = maxHP;
+        if (!this.room) return false;
+
+        if (this.bosshp === undefined) this.bosshp = maxHP;
 
         let now = new Date(Date.now());
         if (now.getDate() != day) {
             this.resetDaily();
             day = now.getDate();
         }
-        let spotlight = toId(room) === spotlights[day];
-        for (let i in users) {
-            let userid = toId(users[i]);
-            if (!this.points[userid]) {
-                this.points[userid] = {};
-                this.daypoints[userid] = {};
+        let ret = [];
+        for (let i in data) {
+            let userid = toId(data[i][0]);
+            let amount = Math.ceil(0.8 * parseInt(data[i][1]));
+
+            if (!this.points.trivia[userid]) {
+                this.points.trivia[userid] = 0;
+                this.daypoints.trivia[userid] = 0;
             }
-            this.points[userid] += points * (spotlight ? 1.5 : 1);
-            this.daypoints[userid] += points * (spotlight ? 1.5 : 1);
-            if (this.daypoints[userid] > pointcap[room] + (spotlight ? 50 : 0)) {
-                let differential = this.daypoints[userid] - pointcap[room] + (spotlight ? 50 : 0);
-                this.points[userid] -= differential;
-                this.daypoints[userid] -= differential;
+            this.points.trivia[userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
+            this.daypoints.trivia[userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
+            if (this.daypoints.trivia[userid] > pointcap.trivia + (spotlight ? 50 : 0)) {
+                let differential = this.daypoints.trivia[userid] - pointcap.trivia + (spotlight ? 50 : 0);
+                this.points.trivia[userid] -= differential;
+                this.daypoints.trivia[userid] -= differential;
             }
+
+            this.names[userid] = Users[userid] ? Users[userid].name : users[i];
+            ret.push(`[${userid}] - ${amount}`);
         }
 
-        this.save(room);
+        this.save("trivia");
+
+        this.room.send(`Trivia hunt awarded by [${source}]: ${ret.join(', ')}`);
         return true;
     },
-    buildleaderboard: function(room = false) {
+    addhunt: function(users, mult = 1, source) {
+        if (!this.room) return false;
+
+        let next = 40;
+
+        if (typeof users === "string") users = users.split(',');
+
+        if (this.bosshp === undefined) this.bosshp = maxHP;
+
+        let now = new Date(Date.now());
+        if (now.getDate() != day) {
+            this.resetDaily();
+            day = now.getDate();
+        }
+        let spotlight = "scavengers" === toId(spotlights[day]);
+        let ret = [];
+        for (let i in users) {
+            let userid = toId(users[i]);
+            let amount = Math.ceil((next > 0 ? next : 3) * mult);
+            if (i == 0) amount = 30;
+
+            if (!this.points.scavengers[userid]) {
+                this.points.scavengers[userid] = 0;
+                this.daypoints.scavengers[userid] = 0;
+            }
+            this.points.scavengers[userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
+            this.daypoints.scavengers[userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
+            if (this.daypoints.scavengers[userid] > pointcap.scavengers + (spotlight ? 50 : 0)) {
+                let differential = this.daypoints.scavengers[userid] - pointcap.scavengers + (spotlight ? 50 : 0);
+                this.points.scavengers[userid] -= differential;
+                this.daypoints.scavengers[userid] -= differential;
+            }
+
+            this.names[userid] = Users[userid] ? Users[userid].name : users[i];
+            ret.push(`[${userid}] - ${amount}`);
+            next -= 5;
+        }
+
+        this.save("scavengers");
+
+        this.room.send(`Scavenger hunt awarded by [${source}]: ${ret.join(', ')}`);
+        return true;
+    },
+    addpoints: function (amount, users, room, source) {
+        if (!this.room) return false;
+
+        roomid = toId(room);
+        for (let i of Config.GameRooms) {
+            if (toId(i) === roomid) room = i; 
+        }
+        if (typeof users === "string") users = users.split(',');
+
+        if (this.bosshp === undefined) this.bosshp = maxHP;
+
+        let now = new Date(Date.now());
+        if (now.getDate() != day) {
+            this.resetDaily();
+            day = now.getDate();
+        }
+        let spotlight = toId(roomid) === toId(spotlights[day]);
+        for (let i in users) {
+            let userid = toId(users[i]);
+            if (!this.points[roomid][userid]) {
+                this.points[roomid][userid] = 0;
+                this.daypoints[roomid][userid] = 0;
+            }
+            this.points[roomid][userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
+            this.daypoints[roomid][userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
+            if (this.daypoints[roomid][userid] > pointcap[roomid] + (spotlight ? 50 : 0)) {
+                let differential = this.daypoints[roomid][userid] - pointcap[roomid] + (spotlight ? 50 : 0);
+                this.points[roomid][userid] -= differential;
+                this.daypoints[roomid][userid] -= differential;
+            }
+
+            this.names[userid] = Users[userid] ? Users[userid].name : users[i];
+        }
+
+        this.save(roomid);
+
+        this.room.send(`/modnote ${amount} point${amount === 1 ? "" : "s"} given to ${users.map(x => '[' + toId(x) + ']').join(', ')} for ${room} by [${source}]`)
+        return true;
+    },
+    addeventpoints: function (amount, users, room, source) {
+        if (!this.room) return false;
+
+        roomid = toId(room);
+        for (let i of Config.GameRooms) {
+            if (toId(i) === roomid) room = i; 
+        }
+        if (typeof users === "string") users = users.split(',');
+
+        if (this.bosshp === undefined) this.bosshp = maxHP;
+
+        let now = new Date(Date.now());
+        if (now.getDate() != day) {
+            this.resetDaily();
+            day = now.getDate();
+        }
+        let spotlight = false;
+        for (let i in users) {
+            let userid = toId(users[i]);
+            if (!this.points[roomid][userid]) {
+                this.points[roomid][userid] = 0;
+                this.daypoints[roomid][userid] = 0;
+            }
+            this.points[roomid][userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
+            this.daypoints[roomid][userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
+            if (this.daypoints[roomid][userid] > pointcap[roomid] + (spotlight ? 50 : 0)) {
+                let differential = this.daypoints[roomid][userid] - pointcap[roomid] + (spotlight ? 50 : 0);
+                this.points[roomid][userid] -= differential;
+                this.daypoints[roomid][userid] -= differential;
+            }
+
+            this.names[userid] = Users[userid] ? Users[userid].name : users[i];
+        }
+
+        this.save(roomid);
+
+        this.room.send(`/modnote ${amount} point${amount === 1 ? "" : "s"} given to ${users.map(x => '[' + toId(x) + ']').join(', ')} for ${room} by [${source}]`)
+        return true;
+    },
+    buildTotalBoard() {
         let scores = [];
-        for (let i in this.points) {
+        for (let i in this.names) {
+            let pscores = {
+                battledome: this.points.battledome[i] ? this.points.battledome[i] : 0,
+                gamecorner: this.points.gamecorner[i] ? this.points.gamecorner[i] : 0,
+                mafia: this.points.mafia[i] ? this.points.mafia[i] : 0,
+                scavengers: this.points.scavengers[i] ? this.points.scavengers[i] : 0,
+                survivor: this.points.survivor[i] ? this.points.survivor[i] : 0,
+                trivia: this.points.trivia[i] ? this.points.trivia[i] : 0,
+            }
+
+            let sobj = Object.values(pscores);
+            sobj.sort((a, b) => b - a);
+            let weighted = Math.floor(sobj[0] + sobj[1] * 1.2 + sobj[2] * 1.4 + sobj[3] * 1.6 + sobj[4] * 1.8 + sobj[5] * 2.0);
+            let total = sobj[0] + sobj[1] + sobj[2] + sobj[3] + sobj[4] + sobj[4];
+            
             scores.push([
                 i,
-                this.points[i]
+                weighted,
+                total,
+                pscores.battledome,
+                pscores.gamecorner,
+                pscores.mafia,
+                pscores.scavengers,
+                pscores.survivor,
+                pscores.trivia
+            ]);
+        }
+        scores.sort((a, b) => b[1] - a[1]);
+
+        let bosshp = Math.floor(this.bosshp / maxHP * 100);
+        let ret = `<div style="width:100%;height:100%;background:rgba(100, 180, 255, 0.1);overflow:auto">`;
+
+        ret += `<center style="margin:70px">`
+        ret += `<h2>Gamer God</h2>`
+        ret += `<div style="background:rgb(160, 160, 160);width:100%;height:32px;overflow:hidden;color:black">`
+        ret += `<div style="background:rgb(255, 120, 120);width:${bosshp}%;height:32px;overflow:visible;float:left;padding:6px;font-size:16px"><div style="width:800px;height:32px;text-align:left">${this.bosshp}/${maxHP} HP</div></div></div>`;
+
+        ret += `Every point you gain deals 1 damage to the Gamer God. If the Gamer God is defeated by the 17th, 18th, and 19th of March, all rooms have a spotlight for those days, increasing point gains!<hr>`
+
+        for (let i of Config.GameRooms) {
+            ret += `<button class="button" name="send" value="/join view-bot-ugo-${toId(i)}board">${i}</button>`;
+        }
+        ret += `<br><button class="button disabled">Ultimate Gaming Olympics</button>`;
+
+        ret += `<hr><h1>Leaderboard for Ultimate Gaming Olympics</h1>`
+        ret += `<div style="overflow:auto;height:70vh"><table style="width:1000px;text-align:center" cellpadding="5" border="1">`;
+        ret += `<tr style="background-color:rgba(140,140,140,0.3)"><th>#</th><th style="width:120px">Name</th><th>Points</th><th>Total Points`
+        ret += `<th>Battle Dome Points</th><th>Game Corner Points</th><th>Mafia Points</th><th>Scavengers Points</th><th>Survivor Points</th><th>Trivia Points</th></tr>`
+        for (let i in scores) {
+            let id = scores[i][0];
+            let name = escape(this.names[id]);
+            let pts = scores[i][1];
+            ret += `<tr><td>${parseInt(i)+1}</td><td>${name}</td><td>${pts}</td><td>${scores[i][2]}</td>`
+            ret += `<td>${scores[i][3]}</td><td>${scores[i][4]}</td><td>${scores[i][5]}</td><td>${scores[i][6]}</td><td>${scores[i][7]}</td><td>${scores[i][8]}</td></tr>`;
+        }
+        ret += `</table></div></center></div>`;
+        return ret;
+    },
+    buildLeaderboard: function(roomid = false) {
+        let scores = [];
+        if (!roomid || getRoomName(roomid) === roomid) {
+            return this.buildTotalBoard();
+        }
+        for (let i in this.points[roomid]) {
+            if (this.points[roomid] === 0) continue;
+            scores.push([
+                i,
+                this.points[roomid][i]
             ]);
         }
 
         scores.sort((a, b) => b[1] - a[1]);
+
+        let ret = `<div style="width:100%;height:100%;background:rgba(100, 180, 255, 0.1);overflow:auto">`;
+        ret += `<center style="margin:70px">`
+        
+        for (let i of Config.GameRooms) {
+            if (toId(i) === roomid) ret += `<button class="button disabled">${i}</button>`;
+            else ret += `<button class="button" name="send" value="/join view-bot-ugo-${toId(i)}board">${i}</button>`;
+        }
+        ret += `<br><button class="button" name="send" value="/join view-bot-ugo-leaderboard">Ultimate Gaming Olympics</button>`;
+
+        ret += `<hr><h1>Leaderboard for ${getRoomName(roomid)}</h1>`
+        ret += `<table style="border-spacing: 0px; border-collapse: collapse;border:1px solid black;width:100%" border="1">`;
+        ret += `<tr style="background-color:rgba(140,140,140,0.3)"><th>#</th><th>name</th><th>points</th></tr>`
+        for (let i in scores) {
+            let id = scores[i][0];
+            let name = escape(this.names[id]);
+            let pts = scores[i][1];
+            ret += `<tr><td>${parseInt(i)+1}</td><td>${name}</td><td>${pts}</td></tr>`;
+        }
+        ret += `</table></center></div>`;
+        return ret;
     }
 }

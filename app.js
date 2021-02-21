@@ -36,6 +36,10 @@ global.Commands = require('./commands.js');
 global.Send = Utils.send;
 global.Sendpm = Utils.sendpm;
 
+// UGO
+global.points = require('./points.js');
+points.load();
+
 // Connect
 let psurl = "ws://sim.smogon.com:8000/showdown/websocket";
 let WebSocketClient = require('websocket').client;

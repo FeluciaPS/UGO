@@ -31,11 +31,11 @@ bot.on('updateuser', (parts) => {
 
 bot.on('c', (parts) => {
     let room = Utils.getRoom(parts[0]);
-    let user = Users[toId(parts[3])];
-    if (!parts[4]) return;
-    let message = parts[4].trim();
+    let user = Users[toId(parts[4] ? parts[3] : parts[2])];
+    if (!user) user = Users.staff;
+    let message = parts[4] ? parts[4].trim() : parts[3].trim();
     for (let i in Rooms) {
-    if (Rooms[i].tournament && !Rooms[i].tournament.started) Rooms[i].tournament.checkstart();    
+        if (Rooms[i].tournament && !Rooms[i].tournament.started) Rooms[i].tournament.checkstart();    
     }
     Rooms[room].runChecks(message);
     logger.emit('chat', Utils.getRoom(parts[0]), user.name, message);
@@ -45,8 +45,14 @@ bot.on('c', (parts) => {
             Rooms[room].send('/hidetext ' + username);
         }
     }
+    if (user.id === "staff" && room === "trivia" && message.startsWith('/raw')) {
+        message = message.replace(/<[^>]+>/gi, '')
+        message = message.slice(5);
+        if (message.startsWith("The scores for the last Trivia game are: ")) return points.addtrivia(message);
+    }
     let time = parts[2];
     let [cmd, args, val] = Utils.SplitMessage(message);
+    let originalcmd = cmd;
     if (cmd in Commands) {
         if (typeof Commands[cmd] === 'string') cmd = Commands[cmd];
         let func = Commands[cmd];
@@ -60,10 +66,20 @@ bot.on('c', (parts) => {
             func = func[target];
             args.shift();
         }
-        func(Rooms[room], user, args, val, time);
+        func(Rooms[room], user, args, val, time, originalcmd);
         logger.emit('cmd', cmd, val);
     }
 });
+
+let pagecommands = {
+    'leaderboard': ';leaderboard',
+    'mafiaboard': ';leaderboard mafia',
+    'battledomeboard': ';leaderboard battledome',
+    'triviaboard': ';leaderboard trivia',
+    'scavengersboard': ';leaderboard scavengers',
+    'gamecornerboard': ';leaderboard gamecorner',
+    'survivorboard': ';leaderboard survivor',
+}
 
 bot.on('pm', (parts) => {
     let room = null;
@@ -73,12 +89,17 @@ bot.on('pm', (parts) => {
         Users.add(parts[2]);
         user = Users[toId(parts[2])];
     }
-    else logger.emit('pm', user.name, message); // Note: No PM handler exists for the logger.
+    console.log(parts);
+    if (parts[5] && parts[5] === "requestpage") {
+        if (pagecommands[parts[7]]) message = pagecommands[parts[7]];
+    }
+    logger.emit('pm', user.name, message); // Note: No PM handler exists for the logger.
     let [cmd, args, val] = Utils.SplitMessage(message);
+    let originalcmd = cmd;
     if (cmd in Commands) {
         if (typeof Commands[cmd] === 'string') cmd = Commands[cmd];
         if (typeof Commands[cmd] === 'object') return; // Can't do that right now
-        Commands[cmd](user, user, args, val);
+        Commands[cmd](user, user, args, val, undefined, originalcmd);
         logger.emit('cmd', cmd, val);
     }
 });
