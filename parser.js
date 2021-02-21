@@ -89,7 +89,6 @@ bot.on('pm', (parts) => {
         Users.add(parts[2]);
         user = Users[toId(parts[2])];
     }
-    console.log(parts);
     if (parts[5] && parts[5] === "requestpage") {
         if (pagecommands[parts[7]]) message = pagecommands[parts[7]];
     }
@@ -108,7 +107,6 @@ bot.on('j', (parts) => {
     let room = Utils.getRoom(parts[0]);
     let p = parts[2].substring(1).split("@");
     let user = parts[2].substring(0, 1) + p[0];
-    console.log(user);
     if (!Users[toId(user)]) Users.add(user);
     Users[toId(user)].join(room, user);
     if (points.names[toId(user)]) points.names[toId(user)] = Users[toId(user)].name;

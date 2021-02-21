@@ -39,13 +39,9 @@ let commands = {
     },
     
     modnote: function(room, user, args, val) {
-        console.log("test");
         if (room != user) return;
-        console.log("test 2");
         if (!args[0]) return user.send(Utils.errorCommand('modnote [room], [message]'));
         room = Utils.toRoomId(args[0]);
-        console.log(Object.keys(Rooms));
-        console.log(Rooms[room]);
         if (!Rooms[room]) return user.send("Room doesn't exist, or I'm not in it");
         let self = Users[toId(Config.username)];
         if (self.rooms[room] != "*") return user.send("I'm not a bot in that room");
