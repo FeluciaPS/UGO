@@ -67,6 +67,8 @@ module.exports = {
 	help: function(room, user, args) {
 		let ret = [
 			`<b>;leaderboard</b> - displays the leaderboard for a room, or overall if no room is given - <code>;leaderboard [room]</code>`,
+			`<b>;credits</b> - displays bot credits - <code>;credits</code>`,
+			`<b>;git</b> - shows a link to the bot code, if one is configured - <code>;git</code>`,
 		]
 		if (!user.can(points.room, '%')) return points.room.send(`/pmuhtml ${user.id}, help, ${ret.join('<br>')}`);;
 		ret = ret.concat([
