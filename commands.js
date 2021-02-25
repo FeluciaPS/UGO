@@ -104,6 +104,11 @@ let commands = {
         if (!user.can(room, 'all')) return;
         if (!args[0]) return user.send('No room given.');
         Send('', '/j ' + args[0]);
+    },
+
+    credits: function(room, user, args) {
+        let target = user.can(room, '+') ? room : user;
+        target.send('UGO bot written by Felucia | Based on https://github.com/TheMezStrikes/bot-base/ (also by Felucia) | Points system shaped by Struchni and aQrator');
     }
 };
 
