@@ -338,7 +338,7 @@ module.exports = {
 
         ret += `<hr><h1>Leaderboard for ${getRoomName(roomid)}</h1>`
         ret += `<table style="border-spacing: 0px; border-collapse: collapse;border:1px solid black;width:100%" border="1">`;
-        ret += `<tr style="background-color:rgba(140,140,140,0.3)"><th>#</th><th>name</th><th>points</th></tr>`
+        ret += `<tr style="background-color:rgba(140,140,140,0.3)"><th>#</th><th>Name</th><th>Points</th></tr>`
         for (let i in scores) {
             let id = scores[i][0];
             let name = escape(this.names[id]);
