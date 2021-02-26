@@ -110,8 +110,9 @@ let commands = {
         let target = user.can(room, '+') ? room : user;
         target.send('UGO bot written by Felucia | Based on https://github.com/TheMezStrikes/bot-base/ (also by Felucia) | Points system shaped by Struchni and aQrator');
     },
-	
-    broadcast: function(room, user, args) {
+    
+    fullbroadcast: 'broadcast',
+    broadcast: function(room, user, args, val, time, cmd) {
 	if (!user.can(room, 'all')) return;
 	
 	let colour = "blue";
@@ -120,6 +121,7 @@ let commands = {
 	if (!message) return user.send("You're using this command wrong");
 	for (let i in Rooms) {
 		if (i === "add") continue;
+		if (i === "ugo" && cmd === "broadcast") continue;
 		let randomid = Math.floor(Math.random() * 10000);
 		if (colour === "raw") Rooms[i].send(`/adduhtml broadcast-${randomid}, ${message}`);
 		else if (colour === "wall") Rooms[i].send(`/wall ${message}`);
@@ -127,14 +129,15 @@ let commands = {
 	}
 	user.send("Broadcast sent to all rooms");
     },
-	
-    declare: function(room, user, args) {
+	fulldeclare: 'declare',
+    declare: function(room, user, args, val, time, cmd) {
 	if (!user.can(room, 'all')) return;
 	
 	let message = args.map(x => x.trim()).join(', ');
 	if (!message) return user.send("You're using this command wrong");
 	for (let i in Rooms) {
 		if (i === "add") continue;
+		if (i === "ugo" && cmd === "declare") continue;
 		Rooms[i].send(`/declare ${message}`);
 	}
 	user.send("Declare sent sent to all rooms");
