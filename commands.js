@@ -114,8 +114,8 @@ let commands = {
     broadcast: function(room, user, args) {
 	if (!user.can(room, 'all')) return;
 	
-	let colour = "blue"
-	if (["blue", "red", "green", "raw", "wall"].includes(toId(args[0])) colour = toId(args.shift());
+	let colour = "blue";
+	if (["blue", "red", "green", "raw", "wall"].includes(toId(args[0]))) colour = toId(args.shift());
 	let message = args.map(x => x.trim()).join(', ');
 	if (!message) return user.send("You're using this command wrong");
 	for (let i in Rooms) {
