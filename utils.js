@@ -28,34 +28,34 @@ let qSend = function (data) {
 exports.send = function (room, message) {
     qSend(room + "|" + message);
 };
-	
-exports.sendpm = function(user, message) {
+
+exports.sendpm = function (user, message) {
     qSend("|/w " + user + ", " + message);
 };
 
-exports.toId = function(ting) {
-	return ('' + ting).toLowerCase().replace(/[^a-z0-9]+/g, '');
+exports.toId = function (ting) {
+    return ('' + ting).toLowerCase().replace(/[^a-z0-9]+/g, '');
 };
 
-exports.toRoomId = function(ting) {
-	return ('' + ting).toLowerCase().replace(/[^a-z0-9\-]+/g, '');
+exports.toRoomId = function (ting) {
+    return ('' + ting).toLowerCase().replace(/[^a-z0-9\-]+/g, '');
 };
 
 
-exports.getRoom = function(room) {
-	return room.replace(">", "").replace("\n", "")
+exports.getRoom = function (room) {
+    return room.replace(">", "").replace("\n", "")
 };
 
-global.Ranks = { 
-	"~": 0,
-	"&": 1,
-	"#": 2,
-	"*": 3,
-	"@": 4,
-	"%": 5,
-	"+": 6,
+global.Ranks = {
+    "~": 0,
+    "&": 1,
+    "#": 2,
+    "*": 3,
+    "@": 4,
+    "%": 5,
+    "+": 6,
     "^": 6.5,
-	" ": 7,
+    " ": 7,
     "!": 8,
 };
 
@@ -67,7 +67,7 @@ exports.SplitMessage = function (message) {
     return [a, b, c];
 }
 
-exports.ObjectRename = function(object, oldkey, newkey) {
+exports.ObjectRename = function (object, oldkey, newkey) {
     if (oldkey !== newkey) {
         //console.log(object);
         Object.defineProperty(object, newkey,
@@ -76,19 +76,19 @@ exports.ObjectRename = function(object, oldkey, newkey) {
     }
 }
 
-exports.select = function(arr) {
+exports.select = function (arr) {
     return arr[Math.floor(Math.random() * arr.length)]
 }
 
-exports.clean = function(thing) {
+exports.clean = function (thing) {
     return thing.toString().replace(/\r\n/g, '\n');
 }
 
-String.prototype.capitalize = function() {
+String.prototype.capitalize = function () {
     let str = this.toLowerCase();
     return str.charAt(0).toUpperCase() + str.substring(1);
 }
 
-exports.cmdErr = function(text) {
+exports.cmdErr = function (text) {
     return "Usage: ``" + Config.char + text + "``.";
 }

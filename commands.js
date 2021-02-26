@@ -1,19 +1,19 @@
 let commands = {
     // Utilities
-	th: 'tourhistory',
-	tourhistory: function(room, user, args) {
-		if (!user.can(room, '+')) return;
-		if (!room.pasttours.length) return room.send("This room has no past tours recorded.");
-		room.send("**Tour history** (most recent first): " + room.pasttours.reverse().join(', '));
-		room.pasttours.reverse();
-	},
-	lasttour: function(room, user, args) {
-		if (!user.can(room, '+')) return;
-		if (!room.lasttour[0]) return room.send("This room has no past tours recorded.");
-		let ago = Math.floor((Date.now() - room.lasttour[0]) / 60000);
-		return room.send(`**${room.lasttour[1]}** ${ago} minute${ago === 1 ? '' : 's'} ago.`);
-	},
-    mail: function(room, user, args, val) {
+    th: 'tourhistory',
+    tourhistory: function (room, user, args) {
+        if (!user.can(room, '+')) return;
+        if (!room.pasttours.length) return room.send("This room has no past tours recorded.");
+        room.send("**Tour history** (most recent first): " + room.pasttours.reverse().join(', '));
+        room.pasttours.reverse();
+    },
+    lasttour: function (room, user, args) {
+        if (!user.can(room, '+')) return;
+        if (!room.lasttour[0]) return room.send("This room has no past tours recorded.");
+        let ago = Math.floor((Date.now() - room.lasttour[0]) / 60000);
+        return room.send(`**${room.lasttour[1]}** ${ago} minute${ago === 1 ? '' : 's'} ago.`);
+    },
+    mail: function (room, user, args, val) {
         if (!user.can(" ")) return;
         let target = args[0];
         let targetid = toId(target);
@@ -24,10 +24,10 @@ let commands = {
         if (Users[targetid]) return Users[targetid].send(message);
         FS.readFile(`mail/${targetid}.json`, (err, data) => {
             let maildata = [];
-            if (err) {}
-            else {
-                try { maildata = JSON.parse(data); }
-                catch (e) { };
+            if (err) {} else {
+                try {
+                    maildata = JSON.parse(data);
+                } catch (e) {};
             }
             if (maildata.length === Config.mail.inboxSize) return user.send("That user's mailbox is full.");
             maildata.push(message);
@@ -37,8 +37,8 @@ let commands = {
             });
         });
     },
-    
-    modnote: function(room, user, args, val) {
+
+    modnote: function (room, user, args, val) {
         if (room != user) return;
         if (!args[0]) return user.send(Utils.errorCommand('modnote [room], [message]'));
         room = Utils.toRoomId(args[0]);
@@ -53,7 +53,7 @@ let commands = {
         Send(room, ret);
     },
     // Dev stuff
-    git: function(room, user, args) {
+    git: function (room, user, args) {
         let target = user.can(room, '+') ? room : user;
         if (!target) target = user;
         let msg = "No git url is configured for this bot."
@@ -62,92 +62,93 @@ let commands = {
     },
 
     rl: 'reload',
-    reload: function(room, user, args) {
+    reload: function (room, user, args) {
         if (!user.can(room, 'all')) return;
         bot.emit('reload', args[0], room);
     },
-    
-    update: function(room, user, args) {
+
+    update: function (room, user, args) {
         if (!user.can(room, 'all')) return;
         if (!Config.git) return room.send("No git url is configured for this bot.");
         const child_process = require('child_process');
-        child_process.execSync('git pull ' + Config.git + ' master', {stdio: 'inherit'});
+        child_process.execSync('git pull ' + Config.git + ' master', {
+            stdio: 'inherit'
+        });
         room.send("Code updated to the latest version.");
     },
-    
+
     js: 'eval',
-    eval: function(room, user, args, val) {
+    eval: function (room, user, args, val) {
         if (!user.can(room, 'all')) return;
         if (!room) room = user;
         if (!val) return;
         try {
-			let ret = eval(val);
-			if (ret !== undefined) {
-				ret = ret.toString();
-				if (ret.indexOf("\n") !== -1) ret = "!code " + ret;
-				room.send(JSON.stringify(ret));
-			}
-		}
-		catch (e) {
-			room.send(e.name + ": " + e.message);
-		}
+            let ret = eval(val);
+            if (ret !== undefined) {
+                ret = ret.toString();
+                if (ret.indexOf("\n") !== -1) ret = "!code " + ret;
+                room.send(JSON.stringify(ret));
+            }
+        } catch (e) {
+            room.send(e.name + ": " + e.message);
+        }
     },
-    
-    ping: function(room, user, args) {
-        if (!user.can(room, 'all')) return; 
+
+    ping: function (room, user, args) {
+        if (!user.can(room, 'all')) return;
         if (!room) room = user;
         room.send("pong!");
     },
-    
+
     join: 'joinroom',
-    joinroom: function(room, user, args) {
+    joinroom: function (room, user, args) {
         if (!user.can(room, 'all')) return;
         if (!args[0]) return user.send('No room given.');
         Send('', '/j ' + args[0]);
     },
 
-    credits: function(room, user, args) {
+    credits: function (room, user, args) {
         let target = user.can(room, '+') ? room : user;
         target.send('UGO bot written by Felucia | Based on https://github.com/TheMezStrikes/bot-base/ (also by Felucia) | Points system shaped by Struchni and aQrator');
     },
-    
+
     fullbroadcast: 'broadcast',
-    broadcast: function(room, user, args, val, time, cmd) {
-	if (!user.can(room, 'all')) return;
-	
-	let colour = "blue";
-	if (["blue", "red", "green", "raw", "wall"].includes(toId(args[0]))) colour = toId(args.shift());
-	let message = args.map(x => x.trim()).join(', ');
-	if (!message) return user.send("You're using this command wrong");
-	for (let i in Rooms) {
-		if (i === "add") continue;
-		if (i === "ugo" && cmd === "broadcast") continue;
-		let randomid = Math.floor(Math.random() * 10000);
-		if (colour === "raw") Rooms[i].send(`/adduhtml broadcast-${randomid}, ${message}`);
-		else if (colour === "wall") Rooms[i].send(`/wall ${message}`);
-		else Rooms[i].send(`/adduhtml broadcast-${randomid}, <div class="broadcast-${colour}"><b>${message}</b></div>`);
-	}
-	user.send("Broadcast sent to all rooms");
+    broadcast: function (room, user, args, val, time, cmd) {
+        if (!user.can(room, 'all')) return;
+
+        let colour = "blue";
+        if (["blue", "red", "green", "raw", "wall"].includes(toId(args[0]))) colour = toId(args.shift());
+        let message = args.map(x => x.trim()).join(', ');
+        if (!message) return user.send("You're using this command wrong");
+        for (let i in Rooms) {
+            if (i === "add") continue;
+            if (i === "ugo" && cmd === "broadcast") continue;
+            let randomid = Math.floor(Math.random() * 10000);
+            if (colour === "raw") Rooms[i].send(`/adduhtml broadcast-${randomid}, ${message}`);
+            else if (colour === "wall") Rooms[i].send(`/wall ${message}`);
+            else Rooms[i].send(`/adduhtml broadcast-${randomid}, <div class="broadcast-${colour}"><b>${message}</b></div>`);
+        }
+        user.send("Broadcast sent to all rooms");
     },
-	fulldeclare: 'declare',
-    declare: function(room, user, args, val, time, cmd) {
-	if (!user.can(room, 'all')) return;
-	
-	let message = args.map(x => x.trim()).join(', ');
-	if (!message) return user.send("You're using this command wrong");
-	for (let i in Rooms) {
-		if (i === "add") continue;
-		if (i === "ugo" && cmd === "declare") continue;
-		Rooms[i].send(`/declare ${message}`);
-	}
-	user.send("Declare sent sent to all rooms");
+    fulldeclare: 'declare',
+    declare: function (room, user, args, val, time, cmd) {
+        if (!user.can(room, 'all')) return;
+
+        let message = args.map(x => x.trim()).join(', ');
+        if (!message) return user.send("You're using this command wrong");
+        for (let i in Rooms) {
+            if (i === "add") continue;
+            if (i === "ugo" && cmd === "declare") continue;
+            Rooms[i].send(`/declare ${message}`);
+        }
+        user.send("Declare sent sent to all rooms");
     }
 };
 
 let files = FS.readdirSync('commands');
 for (let f in files) {
     let file = files[f];
-    if (file.substring(file.length-3) !== ".js") continue;
+    if (file.substring(file.length - 3) !== ".js") continue;
     if (require.cache[require.resolve('./commands/' + file)]) delete require.cache[require.resolve('./commands/' + file)];
     let contents = require('./commands/' + file);
     Object.assign(commands, contents);

@@ -10,7 +10,7 @@ let getESTDate = function () {
     return new Date(est);
 }
 
-let getRoomName = function(roomid) {
+let getRoomName = function (roomid) {
     for (let i of Config.GameRooms) {
         if (toId(i) === roomid) return i;
     }
@@ -19,7 +19,9 @@ let getRoomName = function(roomid) {
 
 let escape = require('html-escape');
 const storage = require('./storage.js');
-const { toId } = require('./utils.js');
+const {
+    toId
+} = require('./utils.js');
 
 
 const pointcap = 999999999;
@@ -76,23 +78,25 @@ module.exports = {
         }
         this.bosshp = storage.load('bosshp.json').hp;
     },
-    save: function(roomid = false) {
+    save: function (roomid = false) {
         for (let i of Config.GameRooms) {
             if (!roomid || toId(i) === toId(roomid)) {
                 storage.save(`${toId(i)}.json`, this.points[toId(i)]);
                 storage.save(`${toId(i)}-day.json`, this.daypoints[toId(i)]);
             }
         }
-        storage.save('bosshp.json', {hp: this.bosshp});
+        storage.save('bosshp.json', {
+            hp: this.bosshp
+        });
         storage.save('names.json', this.names);
     },
-    resetDaily: function() {
+    resetDaily: function () {
         for (let i in this.daypoints) {
             this.daypoints[i] = 0;
         }
         this.save();
     },
-    addtrivia: function(data) {
+    addtrivia: function (data) {
         data = data.replace("The scores for the last Trivia game are: ", "").split(', ').map(x => [x.split(" ")[0], toId(x.split(" ")[1])]);
         let spotlight = "trivia" === toId(spotlights[day]);
 
@@ -131,7 +135,7 @@ module.exports = {
         this.room.send(`Trivia hunt awarded by [${source}]: ${ret.join(', ')}`);
         return true;
     },
-    addhunt: function(users, mult = 1, source) {
+    addhunt: function (users, mult = 1, source) {
         if (!this.room) return false;
 
         let next = 40;
@@ -179,7 +183,7 @@ module.exports = {
 
         roomid = toId(room);
         for (let i of Config.GameRooms) {
-            if (toId(i) === roomid) room = i; 
+            if (toId(i) === roomid) room = i;
         }
         if (typeof users === "string") users = users.split(',');
 
@@ -218,7 +222,7 @@ module.exports = {
 
         roomid = toId(room);
         for (let i of Config.GameRooms) {
-            if (toId(i) === roomid) room = i; 
+            if (toId(i) === roomid) room = i;
         }
         if (typeof users === "string") users = users.split(',');
 
@@ -268,7 +272,7 @@ module.exports = {
             sobj.sort((a, b) => b - a);
             let weighted = Math.floor(sobj[0] + sobj[1] * 1.2 + sobj[2] * 1.4 + sobj[3] * 1.6 + sobj[4] * 1.8 + sobj[5] * 2.0);
             let total = sobj[0] + sobj[1] + sobj[2] + sobj[3] + sobj[4] + sobj[4];
-            
+
             scores.push([
                 i,
                 weighted,
@@ -312,7 +316,7 @@ module.exports = {
         ret += `</table></div></center></div>`;
         return ret;
     },
-    buildLeaderboard: function(roomid = false) {
+    buildLeaderboard: function (roomid = false) {
         let scores = [];
         if (!roomid || getRoomName(roomid) === roomid) {
             return this.buildTotalBoard();
@@ -329,7 +333,7 @@ module.exports = {
 
         let ret = `<div style="width:100%;height:100%;background:rgba(100, 180, 255, 0.1);overflow:auto">`;
         ret += `<center style="margin:70px">`
-        
+
         for (let i of Config.GameRooms) {
             if (toId(i) === roomid) ret += `<button class="button disabled">${i}</button>`;
             else ret += `<button class="button" name="send" value="/join view-bot-ugo-${toId(i)}board">${i}</button>`;

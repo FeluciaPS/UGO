@@ -1,7 +1,9 @@
 const points = require("./points.js");
-const { toId } = require("./utils.js");
+const {
+    toId
+} = require("./utils.js");
 
-bot.on('challstr', function(parts) {
+bot.on('challstr', function (parts) {
     require("./login.js")(parts[2], parts[3])
 });
 
@@ -23,7 +25,7 @@ bot.on('updateuser', (parts) => {
             skipnext = true;
             continue;
         }
-        
+
         let format = i.split(',')[0];
         Tournament.formats[toId(format)] = format;
     }
@@ -35,7 +37,7 @@ bot.on('c', (parts) => {
     if (!user) user = Users.staff;
     let message = parts[4] ? parts[4].trim() : parts[3].trim();
     for (let i in Rooms) {
-        if (Rooms[i].tournament && !Rooms[i].tournament.started) Rooms[i].tournament.checkstart();    
+        if (Rooms[i].tournament && !Rooms[i].tournament.started) Rooms[i].tournament.checkstart();
     }
     Rooms[room].runChecks(message);
     logger.emit('chat', Utils.getRoom(parts[0]), user.name, message);
@@ -57,12 +59,12 @@ bot.on('c', (parts) => {
         if (typeof Commands[cmd] === 'string') cmd = Commands[cmd];
         let func = Commands[cmd];
         if (typeof func === 'object') {
-        let target = toId(args[0]);
-        if (!target || !func[target]) {
-            target = '';
-            args = [''].concat(args);
-        }
-        if (target in func && typeof func[target] === 'string') target = func[target];
+            let target = toId(args[0]);
+            if (!target || !func[target]) {
+                target = '';
+                args = [''].concat(args);
+            }
+            if (target in func && typeof func[target] === 'string') target = func[target];
             func = func[target];
             args.shift();
         }
@@ -126,8 +128,9 @@ bot.on('n', (parts) => {
     let oldname = parts[3];
     let p = parts[2].substring(1).split("@")
     let newname = parts[2].substring(0, 1) + p[0]
-    try {Rooms[room].rename(oldname, newname);}
-    catch (e) {}
+    try {
+        Rooms[room].rename(oldname, newname);
+    } catch (e) {}
 });
 
 bot.on('deinit', (parts) => {
@@ -169,11 +172,9 @@ bot.on('tournament', (parts, data) => {
 bot.on('dereg', (type, name) => {
     if (type === 'user') {
         delete Users[name];
-    }
-    else if (type === 'room') {
+    } else if (type === 'room') {
         delete Rooms[name];
-    }
-    else logger.emit('error', 'Invalid dereg type: ' + type);
+    } else logger.emit('error', 'Invalid dereg type: ' + type);
 });
 
 bot.on('init', (parts, data) => {
@@ -199,8 +200,7 @@ bot.on('init', (parts, data) => {
         if (part[1] === 'tournament') {
             if (part[2] === "end" || part[1] === "forceend") {
                 Rooms[room].endTour(part[2] === "end" ? part[3] : part[2]);
-            }
-            else { 
+            } else {
                 if (!Rooms[room].tournament) Rooms[room].startTour("late");
             }
         }
@@ -208,7 +208,7 @@ bot.on('init', (parts, data) => {
 });
 
 module.exports = {
-    cmd: function(room, user, message) {
+    cmd: function (room, user, message) {
         let [cmd, args, val] = Utils.SplitMessage(message);
         if (cmd in Commands) {
             if (typeof Commands[cmd] === 'string') cmd = Commands[cmd];

@@ -7,7 +7,7 @@ class User {
         this.id = toId(name);
         this.checkmail();
     }
-    
+
     send(message) {
         if (typeof message === typeof {}) {
             for (let i in message) {
@@ -17,17 +17,18 @@ class User {
         }
         Sendpm(this.name, message);
     }
-    
+
     checkmail() {
         let self = this;
         FS.readFile(`mail/${self.id}.json`, (err, data) => {
             let maildata = [];
-            if (err) { return; }
-            
-            try { 
-                maildata = JSON.parse(data);
+            if (err) {
+                return;
             }
-            catch (e) {
+
+            try {
+                maildata = JSON.parse(data);
+            } catch (e) {
                 maildata = ["[mailerror] Your mail data crashed. Some mail may have gotten lost."];
                 FS.unlinkSync(`mail/${self.id}.json`);
             }
@@ -41,27 +42,27 @@ class User {
             });
         });
     }
-    
+
     join(room, name) {
         this.rooms[room] = name.charAt(0);
         Rooms[room].users[this.id] = this;
     }
-    
+
     leave(room) {
         delete this.rooms[room];
         delete Rooms[room].users[this.id];
         if (!Object.keys(this.rooms).length) bot.emit('dereg', 'user', this.id);
     }
-    
+
     rename(name) {
         this.id = toId(name);
         this.name = name.substring(1);
         this.checkmail();
     }
-    
+
     can(room, rank) {
-    	if (this.id === "staff") return true;
-        if (room === " ") return this.rank !== "‽"; 
+        if (this.id === "staff") return true;
+        if (room === " ") return this.rank !== "‽";
         if (!this.rooms[room] && room !== this) return false;
         if (Config.devs.indexOf(this.id) !== -1) return true;
         if (rank === "all") return false;
@@ -72,11 +73,11 @@ class User {
     }
 }
 
-User.prototype.toString = function() {
-	return this.id;
+User.prototype.toString = function () {
+    return this.id;
 }
 
-exports.add = function(name) {
+exports.add = function (name) {
     let id = toId(name);
     this[id] = new User(name);
 }
