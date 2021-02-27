@@ -219,7 +219,7 @@ module.exports = {
         let users2 = [];
         if ((users.map(x => '[' + toId(x) + ']').join(', ')).length > 250) users2 = users.slice(Math.floor(users.length/2));
         this.room.send(`/modnote ${amount} point${amount === 1 ? "" : "s"} given to ${users.map(x => '[' + toId(x) + ']').join(', ')} for ${room} by [${source}]`)
-        if (users2) this.room.send(`/modnote ${amount} point${amount === 1 ? "" : "s"} given to ${users2.map(x => '[' + toId(x) + ']').join(', ')} for ${room} by [${source}]`)
+        if (users2.length) this.room.send(`/modnote ${amount} point${amount === 1 ? "" : "s"} given to ${users2.map(x => '[' + toId(x) + ']').join(', ')} for ${room} by [${source}]`)
         return true;
     },
     addeventpoints: function (amount, users, room, source) {
@@ -261,7 +261,7 @@ module.exports = {
         let users2 = [];
         if ((users.map(x => '[' + toId(x) + ']').join(', ')).length > 250) users2 = users.slice(Math.floor(users.length/2));
         this.room.send(`/modnote ${amount} point${amount === 1 ? "" : "s"} given to ${users.map(x => '[' + toId(x) + ']').join(', ')} for ${room} by [${source}]`)
-        if (users2) this.room.send(`/modnote ${amount} point${amount === 1 ? "" : "s"} given to ${users2.map(x => '[' + toId(x) + ']').join(', ')} for ${room} by [${source}]`)
+        if (users2.length) this.room.send(`/modnote ${amount} point${amount === 1 ? "" : "s"} given to ${users2.map(x => '[' + toId(x) + ']').join(', ')} for ${room} by [${source}]`)
         return true;
     },
     buildTotalBoard() {
