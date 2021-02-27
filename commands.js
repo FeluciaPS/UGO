@@ -114,7 +114,7 @@ let commands = {
 
     fullbroadcast: 'broadcast',
     broadcast: function (room, user, args, val, time, cmd) {
-        if (!user.can(room, 'all')) return;
+        if (!user.can(points.room, 'all')) return;
 
         let colour = "blue";
         if (["blue", "red", "green", "raw", "wall"].includes(toId(args[0]))) colour = toId(args.shift());
