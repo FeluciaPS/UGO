@@ -133,7 +133,10 @@ module.exports = {
 
         this.save("trivia");
 
-        while (ret.length) this.room.send(`Trivia hunt awarded by [magic]: ${ret.slice(0, 10).join(', ')}`);
+        while (ret.length) {
+            this.room.send(`Trivia hunt awarded by [magic]: ${ret.slice(0, 10).join(', ')}`);
+            ret = ret.slice(10);
+        }
         return true;
     },
     addhunt: function (users, mult = 1, source) {
