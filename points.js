@@ -127,7 +127,7 @@ module.exports = {
                 this.daypoints.trivia[userid] -= differential;
             }
 
-            this.names[userid] = Users[userid] ? Users[userid].name : users[i];
+            this.names[userid] = Users[userid] ? Users[userid].name : data[i][0];
             ret.push(`[${userid}] - ${amount}`);
         }
 
