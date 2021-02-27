@@ -66,6 +66,7 @@ module.exports = {
 		Rooms.trivia.send(`/mn [${user.id}] added a trivia official`);
 		return user.send('Giving out points for the last official.');
 	},
+	lb: 'leaderboard',
 	leaderboard: function (room, user, args) {
 		return points.room.send(`/sendhtmlpage ${user.id}, board, ${points.buildLeaderboard(args[0] ? toId(args[0]) : false)}`);
 	},
