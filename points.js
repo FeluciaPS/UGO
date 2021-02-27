@@ -134,7 +134,7 @@ module.exports = {
         this.save("trivia");
 
         while (ret.length) {
-            this.room.send(`Trivia hunt awarded by [magic]: ${ret.slice(0, 10).join(', ')}`);
+            this.room.send(`Trivia official awarded by [magic]: ${ret.slice(0, 10).join(', ')}`);
             ret = ret.slice(10);
         }
         return true;
@@ -180,7 +180,7 @@ module.exports = {
 
         this.save("scavengers");
 
-        this.room.send(`Scavenger hunt awarded by [${source}]: ${ret.join(', ')}`);
+        this.room.send(`/mn Scavenger hunt awarded by [${source}]: ${ret.join(', ')}`);
         return true;
     },
     addpoints: function (amount, users, room, source) {
