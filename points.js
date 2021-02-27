@@ -120,6 +120,7 @@ module.exports = {
             }
             this.points.trivia[userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
             this.daypoints.trivia[userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
+            this.bosshp -= Math.floor(amount * (spotlight ? 1.5 : 1));
             if (this.daypoints.trivia[userid] > pointcap.trivia + (spotlight ? 50 : 0)) {
                 let differential = this.daypoints.trivia[userid] - pointcap.trivia + (spotlight ? 50 : 0);
                 this.points.trivia[userid] -= differential;
@@ -162,6 +163,7 @@ module.exports = {
             }
             this.points.scavengers[userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
             this.daypoints.scavengers[userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
+            this.bosshp -= Math.floor(amount * (spotlight ? 1.5 : 1));
             if (this.daypoints.scavengers[userid] > pointcap.scavengers + (spotlight ? 50 : 0)) {
                 let differential = this.daypoints.scavengers[userid] - pointcap.scavengers + (spotlight ? 50 : 0);
                 this.points.scavengers[userid] -= differential;
@@ -203,6 +205,7 @@ module.exports = {
             }
             this.points[roomid][userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
             this.daypoints[roomid][userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
+            this.bosshp -= Math.floor(amount * (spotlight ? 1.5 : 1));
             if (this.daypoints[roomid][userid] > pointcap[roomid] + (spotlight ? 50 : 0)) {
                 let differential = this.daypoints[roomid][userid] - pointcap[roomid] + (spotlight ? 50 : 0);
                 this.points[roomid][userid] -= differential;
