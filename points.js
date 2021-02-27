@@ -134,7 +134,7 @@ module.exports = {
         this.save("trivia");
 
         while (ret.length) {
-            this.room.send(`Trivia official awarded by [magic]: ${ret.slice(0, 10).join(', ')}`);
+            this.room.send(`/mn Trivia official awarded by [magic]: ${ret.slice(0, 10).join(', ')}`);
             ret = ret.slice(10);
         }
         return true;
