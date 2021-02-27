@@ -63,6 +63,7 @@ module.exports = {
 			cooldowns.addtriviafish = false
 		}, 15 * 60 * 1000);
 		Rooms.trivia.send('/trivia lastofficialscore');
+		Rooms.trivia.send(`/mn [${user.id}] added a trivia official`);
 		return user.send('Giving out points for the last official.');
 	},
 	leaderboard: function (room, user, args) {
