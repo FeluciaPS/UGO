@@ -83,12 +83,12 @@ module.exports = {
 			["Trivia", points.points.trivia[target] ? points.points.trivia[target] : 0],
 		]
 		scores.sort((a, b) => b[1] - a[1]);
-		let weighted = Math.floor(scores[0] + scores[1] * 1.2 + scores[2] * 1.4 + scores[3] * 1.6 + scores[4] * 1.8 + scores[5] * 2.0);
-		let total = scores[0] + scores[1] + scores[2] + scores[3] + scores[4] + scores[4];
+		let weighted = Math.floor(scores[0][1] + scores[1][1] * 1.2 + scores[2][1] * 1.4 + scores[3][1] * 1.6 + scores[4][1] * 1.8 + scores[5][1] * 2.0);
+		let total = scores[0][1] + scores[1][1] + scores[2][1] + scores[3][1] + scores[4][1] + scores[4][1];
 		
 		let sobj = {}
 		for (let i of scores) {
-			sobj[i][0] = sobj[i][1]
+			scores[i][0] = scores[i][1]
 		}
 		sobj.Total = total;
 		sobj.Struchni = weighted;
