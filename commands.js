@@ -122,8 +122,8 @@ let commands = {
         if (!message) return user.send("You're using this command wrong");
         
         // Replaces <<roomlink>> with html
-        message.replace(/\<\<([A-Za-z0-9-]+)\>\>/gi, '<a href="/$1">$1</a>');
-        console.log(message);
+        message = message.replace(/\<\<([A-Za-z0-9-]+)\>\>/gi, '<a href="/$1">$1</a>');
+        
         for (let i in Rooms) {
             if (i === "add") continue;
             if (i === "ugo" && cmd === "broadcast") continue;
