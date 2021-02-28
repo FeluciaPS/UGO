@@ -87,7 +87,7 @@ module.exports = {
 		let total = scores[0] + scores[1] + scores[2] + scores[3] + scores[4] + scores[4];
 		
 		let sobj = {}
-		for (let i of in scores) {
+		for (let i of scores) {
 			sobj[i][0] = sobj[i][1]
 		}
 		sobj.Total = total;
