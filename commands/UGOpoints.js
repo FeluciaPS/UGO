@@ -94,7 +94,7 @@ module.exports = {
 		sobj.Struchni = weighted;
 		let ret = `<table border="1"><tr><th>Room</th><th>Points</th></tr>`
 		for (let i in sobj) {
-			ret += `<tr><td>${i}</td><td>${sobj[i]}</td></tr>
+			ret += `<tr><td>${i}</td><td>${sobj[i]}</td></tr>`
 		}
 		ret += "</table>";
 		points.room.send(`/pmuhtml ${user.id}, points-${Math.floor(Math.random() * 10000)}, ${ret}`);
