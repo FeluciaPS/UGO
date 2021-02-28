@@ -88,7 +88,7 @@ module.exports = {
 		
 		let sobj = {}
 		for (let i of scores) {
-			scores[i][0] = scores[i][1]
+			sobj[i[0]] = sobj[i[1]]
 		}
 		sobj.Total = total;
 		sobj.Struchni = weighted;
