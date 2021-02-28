@@ -120,6 +120,10 @@ let commands = {
         if (["blue", "red", "green", "raw", "wall"].includes(toId(args[0]))) colour = toId(args.shift());
         let message = args.map(x => x.trim()).join(', ');
         if (!message) return user.send("You're using this command wrong");
+        
+        // Replaces <<roomlink>> with html
+        message.replace(/<<([A-Za-z0-9-]+)>>/gi, '<a href="/$1">$1</a>');
+        
         for (let i in Rooms) {
             if (i === "add") continue;
             if (i === "ugo" && cmd === "broadcast") continue;
