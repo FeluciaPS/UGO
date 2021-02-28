@@ -121,8 +121,11 @@ let commands = {
         let message = args.map(x => x.trim()).join(', ');
         if (!message) return user.send("You're using this command wrong");
         
-        // Replaces <<roomlink>> with html
-        message = message.replace(/\<\<([A-Za-z0-9-]+)\>\>/gi, '<a href="/$1">$1</a>');
+        // Replaces <<roomlink>> with html and sanitises the rest
+        message = message.replace(/\<\<([A-Za-z0-9-]+)\>\>/gi, '[[$1]]');
+        let escape = require('escape-html');
+        if (!user.can(room, 'all')) message = escape(message);
+        message = message.replace(/\[\[([A-Za-z0-9-]+)\]\]/gi, '<a href="/$1">$1</a>');
         
         for (let i in Rooms) {
             if (i === "add") continue;
