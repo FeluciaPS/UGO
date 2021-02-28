@@ -66,14 +66,45 @@ module.exports = {
 		Rooms.trivia.send(`/mn [${user.id}] added a trivia official`);
 		return user.send('Giving out points for the last official.');
 	},
+	lb: 'leaderboard',
 	leaderboard: function (room, user, args) {
 		return points.room.send(`/sendhtmlpage ${user.id}, board, ${points.buildLeaderboard(args[0] ? toId(args[0]) : false)}`);
+	},
+	points: function (room, user, args) {
+		let target = toId(args[0]);
+		if (!target) target = user.id;
+		if (!points.names[target]) return user.send(`${target} has no points.`);
+		let scores = [
+			["Battle Dome", points.points.battledome[target] ? points.points.battledome[target] : 0],
+			["Game Corner", points.points.gamecorner[target] ? points.points.gamecorner[target] : 0],
+			["Mafia", points.points.mafia[target] ? points.points.mafia[target] : 0],
+			["Scavengers", points.points.scavengers[target] ? points.points.scavengers[target] : 0],
+			["Survivor", points.points.survivor[target] ? points.points.survivor[target] : 0],
+			["Trivia", points.points.trivia[target] ? points.points.trivia[target] : 0],
+		]
+		scores.sort((a, b) => b[1] - a[1]);
+		let weighted = Math.floor(scores[0] + scores[1] * 1.2 + scores[2] * 1.4 + scores[3] * 1.6 + scores[4] * 1.8 + scores[5] * 2.0);
+		let total = scores[0] + scores[1] + scores[2] + scores[3] + scores[4] + scores[4];
+		
+		let sobj = {}
+		for (let i of in scores) {
+			sobj[i][0] = sobj[i][1]
+		}
+		sobj.Total = total;
+		sobj.Struchni = weighted;
+		let ret = `<table border="1"><tr><th>Room</th><th>Points</th></tr>`
+		for (let i in sobj) {
+			ret += `<tr><td>${i}</td><td>${sobj[i]}</td></tr>
+		}
+		ret += "</table>";
+		points.room.send(`/pmuhtml ${user.id}, points-${Math.floor(Math.random() * 10000)}, ${ret}`);
 	},
 	help: function (room, user, args) {
 		let ret = [
 			`<b>;leaderboard</b> - displays the leaderboard for a room, or overall if no room is given - <code>;leaderboard [room]</code>`,
 			`<b>;credits</b> - displays bot credits - <code>;credits</code>`,
 			`<b>;git</b> - shows a link to the bot code, if one is configured - <code>;git</code>`,
+			`<b>;points</b> - display points for a user, or yourself if no user is given - <code>;points [user]</code>`
 		]
 		if (!user.can(points.room, '%')) return points.room.send(`/pmuhtml ${user.id}, help, ${ret.join('<br>')}`);;
 		ret = ret.concat([
