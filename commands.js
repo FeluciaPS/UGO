@@ -128,7 +128,7 @@ let commands = {
         message = message.replace(/\[\[([A-Za-z0-9-]+)\]\]/gi, '<a href="/$1">$1</a>');
         
         // Remove spaces from link targets
-        message = message.replace(/(?<=href="[A-z0-9-\s]*)\s(?=[A-z0-9-\s]*\"\>)/gi, '');
+        message = message.replace(/(?<=href="\/[A-z0-9-\s]*)\s(?=[A-z0-9-\s]*\"\>)/gi, '');
         
         for (let i in Rooms) {
             if (i === "add") continue;
