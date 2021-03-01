@@ -199,7 +199,7 @@ module.exports = {
             this.resetDaily();
             day = now.getDate();
         }
-        let spotlight = toId(roomid) === toId(spotlights[day]);
+        let spotlight = toId(roomid) === toId(spotlights[now.getDay()]);
         for (let i in users) {
             let userid = toId(users[i]);
             if (!this.points[roomid][userid]) {
