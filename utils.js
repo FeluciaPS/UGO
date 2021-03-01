@@ -89,6 +89,6 @@ String.prototype.capitalize = function () {
     return str.charAt(0).toUpperCase() + str.substring(1);
 }
 
-exports.cmdErr = function (text) {
+exports.cmdErr = exports.errorCommand = function (text) {
     return "Usage: ``" + Config.char + text + "``.";
 }
