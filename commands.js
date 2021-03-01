@@ -130,9 +130,10 @@ let commands = {
         // Remove spaces from link targets
         message = message.replace(/(?<=href="\/[A-z0-9-\s]*)\s(?=[A-z0-9-\s]*\"\>)/gi, '');
         
-        for (let i in Rooms) {
-            if (i === "add") continue;
-            if (i === "ugo" && cmd === "broadcast") continue;
+        let targetrooms = Config.GameRooms;
+        if (cmd === "fullbroadcast") targetrooms.push("ugo");
+        for (let r in targetrooms) {
+            let i = toId(targetrooms[r]);
             let randomid = Math.floor(Math.random() * 10000);
             if (colour === "raw") Rooms[i].send(`/adduhtml broadcast-${randomid}, ${message}`);
             else if (colour === "wall") Rooms[i].send(`/wall ${message}`);
@@ -146,9 +147,10 @@ let commands = {
 
         let message = args.map(x => x.trim()).join(', ');
         if (!message) return user.send("You're using this command wrong");
-        for (let i in Rooms) {
-            if (i === "add") continue;
-            if (i === "ugo" && cmd === "declare") continue;
+        let targetrooms = Config.GameRooms;
+        if (cmd === "fullbroadcast") targetrooms.push("ugo");
+        for (let r in targetrooms) {
+            let i = toId(targetrooms[r]);
             Rooms[i].send(`/declare ${message}`);
         }
         user.send("Declare sent sent to all rooms");
