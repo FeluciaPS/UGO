@@ -127,7 +127,8 @@ module.exports = {
                 this.daypoints.trivia[userid] -= differential;
             }
 
-            this.names[userid] = Users[userid] ? Users[userid].name : data[i][0];
+            if (Users[userid]) this.names[userid] = Users[userid].name 
+            if (!this.names[userid]) this.names[userid] = data[i][0];
             ret.push(`[${userid}] - ${amount}`);
         }
 
@@ -173,7 +174,8 @@ module.exports = {
                 this.daypoints.scavengers[userid] -= differential;
             }
 
-            this.names[userid] = Users[userid] ? Users[userid].name : users[i];
+            if (Users[userid]) this.names[userid] = Users[userid].name 
+            if (!this.names[userid]) this.names[userid] = users[i];
             ret.push(`[${userid}] - ${amount}`);
             next -= 5;
         }
@@ -217,7 +219,8 @@ module.exports = {
                 this.daypoints[roomid][userid] -= differential;
             }
 
-            this.names[userid] = Users[userid] ? Users[userid].name : users[i];
+            if (Users[userid]) this.names[userid] = Users[userid].name 
+            if (!this.names[userid]) this.names[userid] = users[i];
         }
 
         this.save(roomid);
@@ -258,7 +261,8 @@ module.exports = {
                 this.daypoints[roomid][userid] -= differential;
             }
 
-            this.names[userid] = Users[userid] ? Users[userid].name : users[i];
+            if (Users[userid]) this.names[userid] = Users[userid].name 
+            if (!this.names[userid]) this.names[userid] = users[i];
         }
 
         this.save(roomid);
