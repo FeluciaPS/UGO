@@ -130,7 +130,7 @@ let commands = {
         // Remove spaces from link targets
         message = message.replace(/(?<=href="\/[A-z0-9-\s]*)\s(?=[A-z0-9-\s]*\"\>)/gi, '');
         
-        let targetrooms = Config.GameRooms;
+        let targetrooms = JSON.parse(JSON.stringify(Config.GameRooms));
         if (cmd === "fullbroadcast") targetrooms.push("ugo");
         for (let r in targetrooms) {
             let i = toId(targetrooms[r]);
@@ -147,7 +147,7 @@ let commands = {
 
         let message = args.map(x => x.trim()).join(', ');
         if (!message) return user.send("You're using this command wrong");
-        let targetrooms = Config.GameRooms;
+        let targetrooms = JSON.parse(JSON.stringify(Config.GameRooms));
         if (cmd === "fullbroadcast") targetrooms.push("ugo");
         for (let r in targetrooms) {
             let i = toId(targetrooms[r]);
