@@ -112,7 +112,7 @@ module.exports = {
         let ret = [];
         for (let i in data) {
             let userid = toId(data[i][0]);
-            let amount = Math.ceil(0.8 * parseInt(data[i][1]));
+            let amount = Math.ceil(1 * parseInt(data[i][1]));
 
             if (!this.points.trivia[userid]) {
                 this.points.trivia[userid] = 0;
