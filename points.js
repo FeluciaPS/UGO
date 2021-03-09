@@ -200,9 +200,9 @@ module.exports = {
         if (now.getDate() != day) {
             this.resetDaily();
             day = now.getDate();
-            if (spotlights[now.getDay()]) points.room.send(`/wall Spotlight day for ${spotlights[now.getDay()]} started!`)
+            if (spotlights[now.getDate()]) points.room.send(`/wall Spotlight day for ${spotlights[now.getDate()]} started!`)
         }
-        let spotlight = toId(roomid) === toId(spotlights[now.getDay()]);
+        let spotlight = toId(roomid) === toId(spotlights[now.getDate()]);
         
         for (let i in users) {
             let userid = toId(users[i]);
