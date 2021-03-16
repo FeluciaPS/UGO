@@ -99,7 +99,8 @@ module.exports = {
     addtrivia: function (data) {
         data = data.replace("The scores for the last Trivia game are: ", "").split(', ').map(x => [x.split(" ")[0], toId(x.split(" ")[1])]);
         let spotlight = "trivia" === toId(spotlights[day]);
-
+    
+        if (spotlights[day] === true) spotlight = this.bosshp <= 0;
         if (!this.room) return false;
 
         if (this.bosshp === undefined) this.bosshp = maxHP;
@@ -132,6 +133,7 @@ module.exports = {
             ret.push(`[${userid}] - ${amount}`);
         }
 
+        if (this.bosshp < 0) this.bosshp = 0;
         this.save("trivia");
 
         while (ret.length) {
@@ -155,6 +157,7 @@ module.exports = {
             day = now.getDate();
         }
         let spotlight = "scavengers" === toId(spotlights[day]);
+        if (spotlights[day] === true) spotlight = this.bosshp <= 0;
         let ret = [];
         for (let i in users) {
             let userid = toId(users[i]);
@@ -180,6 +183,7 @@ module.exports = {
             next -= 5;
         }
 
+        if (this.bosshp < 0) this.bosshp = 0;
         this.save("scavengers");
 
         this.room.send(`/mn Scavenger hunt awarded by [${source}]: ${ret.join(', ')}`);
@@ -203,6 +207,7 @@ module.exports = {
             if (spotlights[now.getDate()]) points.room.send(`/wall Spotlight day for ${spotlights[now.getDate()]} started!`)
         }
         let spotlight = toId(roomid) === toId(spotlights[now.getDate()]);
+        if (spotlights[day] === true) spotlight = this.bosshp <= 0;
         
         for (let i in users) {
             let userid = toId(users[i]);
@@ -223,6 +228,7 @@ module.exports = {
             if (!this.names[userid]) this.names[userid] = users[i];
         }
 
+        if (this.bosshp < 0) this.bosshp = 0;
         this.save(roomid);
         let users2 = [];
         if ((users.map(x => '[' + toId(x) + ']').join(', ')).length > 250) users2 = users.slice(Math.floor(users.length/2));
@@ -265,6 +271,8 @@ module.exports = {
             if (Users[userid]) this.names[userid] = Users[userid].name 
             if (!this.names[userid]) this.names[userid] = users[i];
         }
+        
+        if (this.bosshp < 0) this.bosshp = 0;
 
         this.save(roomid);
 
