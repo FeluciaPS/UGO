@@ -217,7 +217,7 @@ module.exports = {
             }
             this.points[roomid][userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
             this.daypoints[roomid][userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
-            this.bosshp -= Math.floor(amount * (spotlight ? 1.5 : 1));
+            if (this.bosshp > 0) this.bosshp -= Math.floor(amount * (spotlight ? 1.5 : 1));
             if (this.daypoints[roomid][userid] > pointcap[roomid] + (spotlight ? 50 : 0)) {
                 let differential = this.daypoints[roomid][userid] - pointcap[roomid] + (spotlight ? 50 : 0);
                 this.points[roomid][userid] -= differential;
@@ -261,7 +261,7 @@ module.exports = {
             }
             this.points[roomid][userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
             this.daypoints[roomid][userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
-            this.bosshp -= amount;
+            if (this.bosshp > 0) this.bosshp -= amount;
             if (this.daypoints[roomid][userid] > pointcap[roomid] + (spotlight ? 50 : 0)) {
                 let differential = this.daypoints[roomid][userid] - pointcap[roomid] + (spotlight ? 50 : 0);
                 this.points[roomid][userid] -= differential;
