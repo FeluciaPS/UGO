@@ -424,7 +424,7 @@ module.exports = {
 			}
 			ret += "|\n";
 		}
-		uploadToHastebin(JSON.stringify(JSON.stringify(scores, null, 2)), function(res1) {
+		uploadToHastebin(JSON.stringify(scores, null, 2), function(res1) {
 			uploadToHastebin(ret, function(res2) {
 				room.send(`${res1} ${res2}`);
 			})
