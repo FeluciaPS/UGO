@@ -76,6 +76,7 @@ module.exports = {
 		if (!points.names[target]) return user.send(`${target} has no points.`);
 		let scores = [
 			["Battle Dome", points.points.battledome[target] ? points.points.battledome[target] : 0],
+			["Board Games", points.points.boardgames[target] ? points.points.boardgames[target] : 0],
 			["Game Corner", points.points.gamecorner[target] ? points.points.gamecorner[target] : 0],
 			["Mafia", points.points.mafia[target] ? points.points.mafia[target] : 0],
 			["Scavengers", points.points.scavengers[target] ? points.points.scavengers[target] : 0],
@@ -83,8 +84,8 @@ module.exports = {
 			["Trivia", points.points.trivia[target] ? points.points.trivia[target] : 0],
 		]
 		scores.sort((a, b) => b[1] - a[1]);
-		let weighted = Math.floor(scores[0][1] + scores[1][1] * 1.2 + scores[2][1] * 1.4 + scores[3][1] * 1.6 + scores[4][1] * 1.8 + scores[5][1] * 2.0);
-		let total = scores[0][1] + scores[1][1] + scores[2][1] + scores[3][1] + scores[4][1] + scores[4][1];
+		let weighted = Math.floor(scores[0][1] + scores[1][1] * 1.2 + scores[2][1] * 1.4 + scores[3][1] * 1.6 + scores[4][1] * 1.8 + scores[5][1] * 2.0 + scores[6][1] * 2.2);
+		let total = scores[0][1] + scores[1][1] + scores[2][1] + scores[3][1] + scores[4][1] + scores[5][1] + scores[6][1];
 		
 		let sobj = {}
 		for (let i of scores) {
@@ -98,6 +99,26 @@ module.exports = {
 		}
 		ret += "</table>";
 		points.room.send(`/pmuhtml ${user.id}, points-${Math.floor(Math.random() * 10000)}, ${ret}`);
+	},
+	authhunt: function (room, user, args) {
+		if (!points.room) return user.send("Bot is not in the hub room, or none is configured.");
+		if (!user.can(points.room, '+')) return;
+
+		// Check input
+		if (args.length != 2) return user.send("Usage: ``;authhunt [username], [room]``.");
+		let username = toId(args.shift());
+
+		let gameroom = toId(args.shift());
+		if (!Config.GameRooms.map(toId).includes(gameroom)) return user.send("Please input a valid room to add points for.");
+		
+		if (username.trim().length > 18) return user.send(`Invalid username: \`\`${username}\`\` (usernames are less than 19 characters long, did you make a mistake?)`);
+		if (toId(username).length < 1) return user.send(`Invalid username: \`\`${username}\`\` (usernames are more than 0 characters long, did you make a mistake?)`);
+		
+		// Give points
+		let amount = 10;
+		let res = points.addauthhunt(amount, username, gameroom, user.id);
+		if (!res) return user.send("Something went wrong...");
+		return user.send('Points successfully given.');
 	},
 	help: function (room, user, args) {
 		let ret = [

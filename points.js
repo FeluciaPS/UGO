@@ -56,25 +56,25 @@ let uploadToHastebin = function (toUpload, callback) {
 
 const pointcap = 999999999;
 const spotlights = {
-	1: "Battle Dome",
-	2: "Mafia",
-	3: "Scavengers",
-	4: "Survivor",
-	5: "Game Corner",
-	8: "Battle Dome",
-	9: "Trivia",
-	10: "Mafia",
-	11: "Scavengers",
-	12: "Survivor",
-	15: "Game Corner",
-	16: "Trivia",
-	17: true,
-	18: true,
-	19: true,
+	23: "Board Games",
+	24: "Battle Dome",
+	25: "Trivia",
+	26: "Mafia",
+	27: "Scavengers",
+	30: "Survivor",
+	31: "Game Corner",
+	1: "Board Games",
+	2: "Battle Dome",
+	3: "Trivia",
+	6: "Survivor",
+	7: "Mafia",
+	8: "Scavengers",
+	9: "Game Corner",
+	10: true
 }
 
 // Max HP for gamers
-const maxHP = 300000;
+const maxHP = 0;
 
 let day = new Date(Date.now()).getDate();
 
@@ -99,26 +99,28 @@ module.exports = {
 		this.save();
 	},
 	load: function () {
-		this.names = storage.load('names.json');
+		let year = new Date(Date.now()).getFullYear();
+		this.names = storage.load(`${year}-names.json`);
 		this.points = {}
 		this.daypoints = {};
 		for (let i of Config.GameRooms) {
-			this.points[toId(i)] = storage.load(`${toId(i)}.json`);
-			this.daypoints[toId(i)] = storage.load(`${toId(i)}-day.json`);
+			this.points[toId(i)] = storage.load(`${year}-${toId(i)}.json`);
+			this.daypoints[toId(i)] = storage.load(`${year}-${toId(i)}-day.json`);
 		}
-		this.bosshp = storage.load('bosshp.json').hp;
+		this.bosshp = storage.load(`${year}-bosshp.json`).hp;
 	},
 	save: function (roomid = false) {
+		let year = new Date(Date.now()).getFullYear();
 		for (let i of Config.GameRooms) {
 			if (!roomid || toId(i) === toId(roomid)) {
-				storage.save(`${toId(i)}.json`, this.points[toId(i)]);
-				storage.save(`${toId(i)}-day.json`, this.daypoints[toId(i)]);
+				storage.save(`${year}-${toId(i)}.json`, this.points[toId(i)]);
+				storage.save(`${year}-${toId(i)}-day.json`, this.daypoints[toId(i)]);
 			}
 		}
-		storage.save('bosshp.json', {
+		storage.save(`${year}-bosshp.json`, {
 			hp: this.bosshp
 		});
-		storage.save('names.json', this.names);
+		storage.save(`${year}-names.json`, this.names);
 	},
 	resetDaily: function () {
 		for (let i in this.daypoints) {
@@ -266,6 +268,54 @@ module.exports = {
 		if (users2.length) this.room.send(`/modnote ${Math.floor(amount * (spotlight ? 1.5 : 1))} point${amount === 1 ? "" : "s"} given to ${users2.map(x => '[' + toId(x) + ']').join(', ')} for ${room} by [${source}]`)
 		return true;
 	},
+	addauthhunt: function (amount, users, room, source) {
+		if (!this.room) return false;
+
+		amount = amount / 2;
+
+		let rooms = [toId(room), "survivor"];
+		for (let i of Config.GameRooms) {
+			if (toId(i) === toId(room)) room = i;
+		}
+		if (typeof users === "string") users = users.split(',');
+
+		if (this.bosshp === undefined) this.bosshp = maxHP;
+
+		let now = new Date(Date.now());
+		if (now.getDate() != day) {
+			this.resetDaily();
+			day = now.getDate();
+			if (spotlights[now.getDate()]) points.room.send(`/wall Spotlight day for ${spotlights[now.getDate()]} started!`)
+		}
+		for (let roomid of rooms) {
+			let spotlight = toId(roomid) === toId(spotlights[now.getDate()]);
+			if (spotlights[day] === true) spotlight = this.bosshp <= 0;
+
+			for (let i in users) {
+				let userid = toId(users[i]);
+				if (!this.points[roomid][userid]) {
+					this.points[roomid][userid] = 0;
+					this.daypoints[roomid][userid] = 0;
+				}
+				this.points[roomid][userid] += amount;
+				this.daypoints[roomid][userid] += amount;
+				if (this.bosshp > 0) this.bosshp -= amount;
+				if (this.daypoints[roomid][userid] > pointcap[roomid] + (spotlight ? 50 : 0)) {
+					let differential = this.daypoints[roomid][userid] - pointcap[roomid] + (spotlight ? 50 : 0);
+					this.points[roomid][userid] -= differential;
+					this.daypoints[roomid][userid] -= differential;
+				}
+
+				if (Users[userid]) this.names[userid] = Users[userid].name
+				if (!this.names[userid]) this.names[userid] = users[i];
+			}
+
+			if (this.bosshp < 0) this.bosshp = 0;
+			this.save(roomid);
+		}
+		this.room.send(`/modnote ${amount} auth hunt points given to ${users.map(x => '[' + toId(x) + ']').join(', ')} for ${room} by [${source}]`)
+		return true;
+	},
 	addeventpoints: function (amount, users, room, source) {
 		if (!this.room) return false;
 
@@ -317,6 +367,7 @@ module.exports = {
 		for (let i in this.names) {
 			let pscores = {
 				battledome: this.points.battledome[i] ? this.points.battledome[i] : 0,
+				boardgames: this.points.boardgames[i] ? this.points.boardgames[i] : 0,
 				gamecorner: this.points.gamecorner[i] ? this.points.gamecorner[i] : 0,
 				mafia: this.points.mafia[i] ? this.points.mafia[i] : 0,
 				scavengers: this.points.scavengers[i] ? this.points.scavengers[i] : 0,
@@ -326,14 +377,15 @@ module.exports = {
 
 			let sobj = Object.values(pscores);
 			sobj.sort((a, b) => b - a);
-			let weighted = Math.floor(sobj[0] + sobj[1] * 1.2 + sobj[2] * 1.4 + sobj[3] * 1.6 + sobj[4] * 1.8 + sobj[5] * 2.0);
-			let total = sobj[0] + sobj[1] + sobj[2] + sobj[3] + sobj[4] + sobj[4];
+			let weighted = Math.floor(sobj[0] + sobj[1] * 1.2 + sobj[2] * 1.4 + sobj[3] * 1.6 + sobj[4] * 1.8 + sobj[5] * 2.0 + sobj[6] * 2.2);
+			let total = sobj[0] + sobj[1] + sobj[2] + sobj[3] + sobj[4] + sobj[5] + sobj[6];
 
 			scores.push([
 				i,
 				weighted,
 				total,
 				pscores.battledome,
+				pscores.boardgames,
 				pscores.gamecorner,
 				pscores.mafia,
 				pscores.scavengers,
@@ -346,16 +398,19 @@ module.exports = {
 		let bosshp = Math.floor(this.bosshp / maxHP * 100);
 		let ret = `<div style="width:100%;height:100%;background:rgba(100, 180, 255, 0.1);overflow:auto">`;
 
-		ret += `<center style="margin:70px">`
-		ret += `<h2>Gamer God</h2>`
-		ret += `<div style="background:rgb(160, 160, 160);width:100%;height:32px;overflow:hidden;color:black">`
-		ret += `<div style="background:rgb(255, 120, 120);width:${bosshp}%;height:32px;overflow:visible;float:left;padding:6px;font-size:16px"><div style="width:800px;height:32px;text-align:left">${this.bosshp}/${maxHP} HP</div></div></div>`;
+		if (useBoss) {
+			ret += `<center style="margin:70px">`
+			ret += `<h2>Gamer God</h2>`
+			ret += `<div style="background:rgb(160, 160, 160);width:100%;height:32px;overflow:hidden;color:black">`
+			ret += `<div style="background:rgb(255, 120, 120);width:${bosshp}%;height:32px;overflow:visible;float:left;padding:6px;font-size:16px"><div style="width:800px;height:32px;text-align:left">${this.bosshp}/${maxHP} HP</div></div></div>`;
 
-		ret += `Every point you gain deals 1 damage to the Gamer God. If the Gamer God is defeated by the 17th, 18th, and 19th of March, all rooms have a spotlight for those days, increasing point gains!<hr>`
+			ret += `Every point you gain deals 1 damage to the Gamer God. If the Gamer God is defeated by the 17th, 18th, and 19th of March, all rooms have a spotlight for those days, increasing point gains!<hr>`
+		}
 
 		for (let i of Config.GameRooms) {
-			ret += `<button class="button" name="send" value="/join view-bot-ugo-${toId(i)}board">${i}</button>`;
+			ret += `<button class="button" name="send" value="/botmsg ${Config.username}, global, leaderboard ${toId(i)}">${i}</button>`;
 		}
+
 		ret += `<br><button class="button disabled">Ultimate Gaming Olympics</button>`;
 
 		ret += `<hr><h1>Leaderboard for Ultimate Gaming Olympics</h1>`
@@ -378,6 +433,7 @@ module.exports = {
 		for (let i in this.names) {
 			let pscores = {
 				battledome: this.points.battledome[i] ? this.points.battledome[i] : 0,
+				boardgames: this.points.boardgames[i] ? this.points.boardgames[i] : 0,
 				gamecorner: this.points.gamecorner[i] ? this.points.gamecorner[i] : 0,
 				mafia: this.points.mafia[i] ? this.points.mafia[i] : 0,
 				scavengers: this.points.scavengers[i] ? this.points.scavengers[i] : 0,
@@ -395,6 +451,7 @@ module.exports = {
 				weighted,
 				total,
 				pscores.battledome,
+				pscores.boardgames,
 				pscores.gamecorner,
 				pscores.mafia,
 				pscores.scavengers,
@@ -411,9 +468,9 @@ module.exports = {
 		}
 
 		let ret = "";
-		ret += "+------+---------------------+-------+-------+-------+-------+-------+-------+-------+-------+\n";
-		ret += "|    # |              usedid | Struc | Total |    BD |    GC | Mafia | Scavs |  Surv |  Triv |\n";
-		ret += "+------+---------------------+-------+-------+-------+-------+-------+-------+-------+-------+\n";
+		ret += "+------+---------------------+-------+-------+-------+-------+-------+-------+-------+-------+-------+\n";
+		ret += "|    # |              userid | Struc | Total |    BD |    BG |    GC | Mafia | Scavs |  Surv |  Triv |\n";
+		ret += "+------+---------------------+-------+-------+-------+-------+-------+-------+-------+-------+-------+\n";
 
 		for (let i = 0; i < scores.length; i++) {
 			let r = scores[i];
@@ -451,9 +508,9 @@ module.exports = {
 
 		for (let i of Config.GameRooms) {
 			if (toId(i) === roomid) ret += `<button class="button disabled">${i}</button>`;
-			else ret += `<button class="button" name="send" value="/join view-bot-ugo-${toId(i)}board">${i}</button>`;
+			else ret += `<button class="button" name="send" value="/botmsg ${Config.username}, global, leaderboard ${toId(i)}">${i}</button>`;
 		}
-		ret += `<br><button class="button" name="send" value="/join view-bot-ugo-leaderboard">Ultimate Gaming Olympics</button>`;
+		ret += `<br><button class="button" name="send" value="/botmsg ${Config.username}, global, leaderboard">Ultimate Gaming Olympics</button>`;
 
 		ret += `<hr><h1>Leaderboard for ${getRoomName(roomid)}</h1>`
 		ret += `<table style="border-spacing: 0px; border-collapse: collapse;border:1px solid black;width:100%" border="1">`;
