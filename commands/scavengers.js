@@ -12,9 +12,13 @@ let parseScavsHunt = function (data) {
         let huntType = intro[1], huntmaker = intro[2];
         let finishers = [], questions = [], hunt = {};
 
-        res.match(/<em>.*?<\/em> <span style="color: lightgreen;">\[(?:\d{2}:){0,2}\d{2}:\d{2}\]<\/span>/g)?.forEach(hit => {
-            let user = toId(unescape(hit.match(/(?<=<em>).*?(?=<\/em>)/)?.[0]));
-            let time = hit.match(/(?<=>)\[(?:\d{2}:){0,2}\d{2}:\d{2}\](?=<)/)?.[0].split(':').reverse().reduce((acc, val, index) => acc + ~~toId(val) * [1, 60, 60, 24].slice(0, index + 1).reduce((a, b) => a * b, 1), 0);
+        let t = res.match(/<em>.*?<\/em> <span style="color: lightgreen;">\[(?:\d{2}:){0,2}\d{2}:\d{2}\]<\/span>/g)
+		if (t) t.forEach(hit => {
+			let usermatch = hit.match(/(?<=<em>).*?(?=<\/em>)/)
+			if (usermatch) usermach = usermatch[0];
+            let user = toId(unescape(usermatch));
+            let time = hit.match(/(?<=>)\[(?:\d{2}:){0,2}\d{2}:\d{2}\](?=<)/)
+			if (time) time = time[0].split(':').reverse().reduce((acc, val, index) => acc + ~~toId(val) * [1, 60, 60, 24].slice(0, index + 1).reduce((a, b) => a * b, 1), 0);
             finishers.push({ user: user, time: time * 1000 });
         });
 
