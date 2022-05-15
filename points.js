@@ -399,8 +399,8 @@ module.exports = {
 		let bosshp = Math.floor(this.bosshp / maxHP * 100);
 		let ret = `<div style="width:100%;height:100%;background:rgba(100, 180, 255, 0.1);overflow:auto">`;
 
+		ret += `<center style="margin:70px">`
 		if (useBoss) {
-			ret += `<center style="margin:70px">`
 			ret += `<h2>Gamer God</h2>`
 			ret += `<div style="background:rgb(160, 160, 160);width:100%;height:32px;overflow:hidden;color:black">`
 			ret += `<div style="background:rgb(255, 120, 120);width:${bosshp}%;height:32px;overflow:visible;float:left;padding:6px;font-size:16px"><div style="width:800px;height:32px;text-align:left">${this.bosshp}/${maxHP} HP</div></div></div>`;
