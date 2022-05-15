@@ -409,7 +409,7 @@ module.exports = {
 		}
 
 		for (let i of Config.GameRooms) {
-			ret += `<button class="button" name="send" value="/botmsg ${Config.username}, global, leaderboard ${toId(i)}">${i}</button>`;
+			ret += `<button class="button" name="send" value="/msgroom ${Config.hubroom}, /botmsg ${Config.username}, global, leaderboard ${toId(i)}">${i}</button>`;
 		}
 
 		ret += `<br><button class="button disabled">Ultimate Gaming Olympics</button>`;
@@ -509,9 +509,9 @@ module.exports = {
 
 		for (let i of Config.GameRooms) {
 			if (toId(i) === roomid) ret += `<button class="button disabled">${i}</button>`;
-			else ret += `<button class="button" name="send" value="/botmsg ${Config.username}, global, leaderboard ${toId(i)}">${i}</button>`;
+			else ret += `<button class="button" name="send" value="/msgroom ${Config.hubroom}, /botmsg ${Config.username}, global, leaderboard ${toId(i)}">${i}</button>`;
 		}
-		ret += `<br><button class="button" name="send" value="/botmsg ${Config.username}, global, leaderboard">Ultimate Gaming Olympics</button>`;
+		ret += `<br><button class="button" name="send" value="/msgroom ${Config.hubroom}, /botmsg ${Config.username}, global, leaderboard">Ultimate Gaming Olympics</button>`;
 
 		ret += `<hr><h1>Leaderboard for ${getRoomName(roomid)}</h1>`
 		ret += `<table style="border-spacing: 0px; border-collapse: collapse;border:1px solid black;width:100%" border="1">`;

@@ -81,7 +81,8 @@ let pagecommands = {
 bot.on('pm', (parts) => {
     let room = null;
     let user = Users[toId(parts[2])];
-    let message = parts[4].trim();
+    room = user;
+    let message = parts.slice(4).join('|').trim();
     if (!user) {
         Users.add(parts[2]);
         user = Users[toId(parts[2])];
@@ -89,13 +90,24 @@ bot.on('pm', (parts) => {
     if (parts[5] && parts[5] === "requestpage") {
         if (pagecommands[parts[7]]) message = pagecommands[parts[7]];
     }
+    if (message.startsWith("/botmsg")) {
+        // Remove "/botmsg " from the message
+        message = message.substr(8);
+
+        // Split and retrieve the room it was used in, this should be sent in ALL instances of /botmsg.
+        let btmp = message.split(",");
+        message = btmp.slice(1).join(",").trim();
+
+        // If the room exists, the command was used in a room, else it was used in PM.
+        if (Rooms[btmp[0]]) room = Rooms[btmp[0]];
+    }
     logger.emit('pm', user.name, message); // Note: No PM handler exists for the logger.
     let [cmd, args, val] = Utils.SplitMessage(message);
     let originalcmd = cmd;
     if (cmd in Commands) {
         if (typeof Commands[cmd] === 'string') cmd = Commands[cmd];
         if (typeof Commands[cmd] === 'object') return; // Can't do that right now
-        Commands[cmd](user, user, args, val, undefined, originalcmd);
+        Commands[cmd](room, user, args, val, undefined, originalcmd);
         logger.emit('cmd', cmd, val);
     }
 });
