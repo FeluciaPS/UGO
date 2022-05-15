@@ -7,7 +7,7 @@ let parseScavsHunt = function(data) {
 	let huntEnd = data.match(/^<div class="broadcast-blue"><strong>The (?:(?:regular|official|practice|recycled|unrated|mini) )?[sS]cavenger [hH]unt (?:by ((?=<em>)<em>.*<\/em>|.*) )?was ended/);
 	let hunt = {};
 	if (huntEnd) {
-		let [res] = data.split('<details style="cursor: pointer;">');
+		let [res, huntText] = data.split('<details style="cursor: pointer;">');
 		let makerText = res.match(/The (.*?) ?[sS]cavenger [hH]unt (?:by (.*?) )?was ended/)[2];
 		let tempMaker = hunt.makers;
 		hunt.makers = (makerText || '').match(/(?<=<em>).+?(?=<\/em>)/g)
@@ -29,7 +29,7 @@ let parseScavsHunt = function(data) {
 			});
 		}
 		else {
-			let x = res.match(/<em>.*?<\/em> <span style="color: lightgreen;">\[(?:\d{2}:){0,2}\d{2}:\d{2}\]<\/span>/g)
+			let x = res.match(/<em>[^<>]*?<\/em> <span style="color: lightgreen;">\[(?:\d{2}:){0,2}\d{2}:\d{2}\]<\/span>/g)
 			if (x) x.forEach(hit => {
 				let m = hit.match(/(?<=<em>).*?(?=<\/em>)/);
 				let user = toId(unescape(m[0]));
