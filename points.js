@@ -17,7 +17,7 @@ let getRoomName = function (roomid) {
 	return roomid;
 }
 
-let escape = require('html-escape');
+let {escape, unescape} = require('html-escaper');
 const storage = require('./storage.js');
 const {
 	toId

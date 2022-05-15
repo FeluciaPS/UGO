@@ -1,8 +1,3 @@
-const points = require("./points.js");
-const {
-    toId
-} = require("./utils.js");
-
 bot.on('challstr', function (parts) {
     require("./login.js")(parts[2], parts[3])
 });

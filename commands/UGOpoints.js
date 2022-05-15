@@ -1,8 +1,3 @@
-const {
-	rooms
-} = require("../config");
-const points = require("../points");
-
 let cooldowns = {};
 module.exports = {
 	savepoints: function (room, user, args) {
