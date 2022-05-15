@@ -49,19 +49,15 @@ let parseScavsHunt = function(data) {
 bot.on('raw', (parts) => {
 	let room = Rooms[Utils.getRoom(parts[0])];
 	if (!room) {
-		console.log("No room for raw data");
 		return;
 	}
-	if (room.id !== "groupchat-scavengers-testing") {
-		console.log("room is not scavengers");
+	if (room.id !== "scavengers") {
 		return;
 	}
 	let data = parts.slice(2).join('|');
 	let hunt = parseScavsHunt(data);
 	if (hunt) 
 		lastHunt = hunt;
-	else 
-		console.log("no hunt found in data");
 });
 
 module.exports = {
@@ -75,5 +71,9 @@ module.exports = {
 		ret += `${hunt.makers.join(', ')}<hr>`;
 		ret += `${hunt.finishers.map(x => x.user).join('<br>')}`;
 		points.room.send(`/sendhtmlpage ${user.id}, test, ${ret}`);
+	},
+	scavengerhunt: function(room, user, args) {
+		if (!user.can(points.room, '%'))
+			return;
 	}
 }

@@ -75,6 +75,7 @@ const spotlights = {
 
 // Max HP for gamers
 const maxHP = 0;
+const useBoss = false;
 
 let day = new Date(Date.now()).getDate();
 
@@ -481,7 +482,7 @@ module.exports = {
 			}
 			ret += "|\n";
 		}
-		ret += "+------+---------------------+-------+-------+-------+-------+-------+-------+-------+-------+"
+		ret += "+------+---------------------+-------+-------+-------+-------+-------+-------+-------+-------+-------+"
 		uploadToHastebin(JSON.stringify(scores, null, 2), function(res1) {
 			uploadToHastebin(ret, function(res2) {
 				room.send(`${res1} ${res2}`);
