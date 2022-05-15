@@ -32,13 +32,20 @@ let parseScavsHunt = function (data) {
 
 bot.on('raw', (parts) => {
 	let room = Rooms[Utils.getRoom(parts[0])];
-	if (!room)
+	if (!room) {
+		console.log("No room for raw data");
 		return;
-	if (room.id !== "scavengers") return;
+	}
+	if (room.id !== "ultimategamingolympics") {
+		console.log("room is not scavengers");
+		return;
+	}
 	let data = parts.slice(2).join('|');
-	let hunt = parseScavsHunt(parts);
+	let hunt = parseScavsHunt(data);
 	if (hunt) 
 		lastHunt = hunt;
+	else 
+		console.log("no hunt found in data");
 });
 
 module.exports = {
