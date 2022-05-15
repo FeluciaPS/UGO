@@ -43,10 +43,12 @@ bot.on('raw', (parts) => {
 
 module.exports = {
 	viewlasthunt: function (room, user, args) {
+		if (!hunt)
+			return points.room.send(`/sendhtmlpage ${user.id}, test, No hunt recorded`);
 		let ret = "";
 		ret += `${hunt.type}<br>`;
 		ret += `${hunt.maker}<hr>`;
 		ret += `${hunt.finishers.map(x => x.user).join('<br>')}`;
-		points.room.send(`/sendhtmlpage ${user.id}, ${test}, ${ret}`);
+		points.room.send(`/sendhtmlpage ${user.id}, test, ${ret}`);
 	}
 }
