@@ -36,7 +36,7 @@ bot.on('raw', (parts) => {
 		console.log("No room for raw data");
 		return;
 	}
-	if (room.id !== "ultimategamingolympics") {
+	if (room.id !== "groupchat-scavengers-testing") {
 		console.log("room is not scavengers");
 		return;
 	}
