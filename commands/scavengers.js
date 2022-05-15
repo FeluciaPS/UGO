@@ -41,7 +41,7 @@ bot.on('raw', (parts) => {
 		lastHunt = hunt;
 });
 
-exports.commands = {
+module.exports = {
 	viewlasthunt: function (room, user, args) {
 		let ret = "";
 		ret += `${hunt.type}<br>`;
