@@ -96,7 +96,7 @@ bot.on('pm', (parts) => {
 
         // Split and retrieve the room it was used in, this should be sent in ALL instances of /botmsg.
         let btmp = message.split(",");
-        message = btmp.slice(1).join(",").trim();
+        message = Config.char + btmp.slice(1).join(",").trim();
 
         // If the room exists, the command was used in a room, else it was used in PM.
         if (Rooms[btmp[0]]) room = Rooms[btmp[0]];
