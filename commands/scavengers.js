@@ -32,6 +32,8 @@ let parseScavsHunt = function (data) {
 
 bot.on('raw', (parts) => {
 	let room = Rooms[Utils.getRoom(parts[0])];
+	if (!room)
+		return;
 	if (room.id !== "scavengers") return;
 	let data = parts.slice(2).join('|');
 	let hunt = parseScavsHunt(parts);
