@@ -1,6 +1,6 @@
 let {unescape} = require('html-escaper');
 
-let lastHunt = false;
+global.lastHunt = false;
 
 
 let parseScavsHunt = function(data) {
@@ -66,13 +66,13 @@ bot.on('raw', (parts) => {
 
 module.exports = {
 	viewlasthunt: function (room, user, args) {
+		console.log(lastHunt);
 		if (!lastHunt)
 			return points.room.send(`/sendhtmlpage ${user.id}, test, No hunt recorded`);
 		
 		let hunt = lastHunt;
 		let ret = "";
-		ret += `${hunt.type}<br>`;
-		ret += `${hunt.maker}<hr>`;
+		ret += `${hunt.makers.join(', ')}<hr>`;
 		ret += `${hunt.finishers.map(x => x.user).join('<br>')}`;
 		points.room.send(`/sendhtmlpage ${user.id}, test, ${ret}`);
 	}
