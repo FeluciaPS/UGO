@@ -11,9 +11,9 @@ let parseScavsHunt = function(data) {
 		let makerText = res.match(/The (.*?) ?[sS]cavenger [hH]unt (?:by (.*?) )?was ended/)[2];
 		let tempMaker = hunt.makers;
 		hunt.makers = (makerText || '').match(/(?<=<em>).+?(?=<\/em>)/g)
-		if (hunt.makers) hunt.makers = hunt.makers.map(match => toID(tools.unescapeHTML(match))) || [toID(tools.unescapeHTML(makerText))];
+		if (hunt.makers) hunt.makers = hunt.makers.map(match => toId(tools.unescapeHTML(match))) || [toId(tools.unescapeHTML(makerText))];
 		if (makerText && makerText.includes(' and ') && timestamp < 1621755253153n) {
-			hunt.makers = makerText.split(' and ').map(t => t.split(',')).flat().map(u => toID(tools.unescapeHTML(u)));
+			hunt.makers = makerText.split(' and ').map(t => t.split(',')).flat().map(u => toId(tools.unescapeHTML(u)));
 		}
 		hunt.finishers = [];
 		if (!hunt.makers.join('')) {
@@ -23,7 +23,7 @@ let parseScavsHunt = function(data) {
 					let time = (m.match(/(?<=<span style="color: [^"]+">\[)((?:\d{2}:)?\d{2}:\d{2})(?=\])/));
 					if (time) time = (time[0].split(':').map(n => ~~n).reverse().reduce((acc, val, index) => acc + val * [1, 60, 60, 24].slice(0, index + 1).reduce((a, b) => a * b, 1), 0) * 1000) || undefined;
 					if (time) m = m;
-					let user = toID(tools.unescapeHTML(m.replace(/<span.*<\/span>/g, '').replace(/<[^>]*>/g, '')));
+					let user = toId(tools.unescapeHTML(m.replace(/<span.*<\/span>/g, '').replace(/<[^>]*>/g, '')));
 					hunt.finishers.push({ user: user, time: time });
 				});
 			});
@@ -32,9 +32,9 @@ let parseScavsHunt = function(data) {
 			let x = res.match(/<em>.*?<\/em> <span style="color: lightgreen;">\[(?:\d{2}:){0,2}\d{2}:\d{2}\]<\/span>/g)
 			if (x) x.forEach(hit => {
 				let m = hit.match(/(?<=<em>).*?(?=<\/em>)/);
-				let user = toID(unescape(m[0]));
+				let user = toId(unescape(m[0]));
 				let time = hit.match(/(?<=>)\[(?:\d{2}:){0,2}\d{2}:\d{2}\](?=<)/)
-				if (time) time = time[0].split(':').reverse().reduce((acc, val, index) => acc + ~~toID(val) * [1, 60, 60, 24].slice(0, index + 1).reduce((a, b) => a * b, 1), 0);
+				if (time) time = time[0].split(':').reverse().reduce((acc, val, index) => acc + ~~toId(val) * [1, 60, 60, 24].slice(0, index + 1).reduce((a, b) => a * b, 1), 0);
 				else time = 0;
 				hunt.finishers.push({ user: user, time: time * 1000 });
 			});
