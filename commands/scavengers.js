@@ -42,7 +42,7 @@ bot.on('raw', (parts) => {
 });
 
 exports.commands = {
-	viewLastHunt: function (room, user, args) {
+	viewlasthunt: function (room, user, args) {
 		let ret = "";
 		ret += `${hunt.type}<br>`;
 		ret += `${hunt.maker}<hr>`;
