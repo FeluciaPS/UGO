@@ -12,7 +12,7 @@ let parseScavsHunt = function(data) {
 		let tempMaker = hunt.makers;
 		hunt.makers = (makerText || '').match(/(?<=<em>).+?(?=<\/em>)/g)
 		if (hunt.makers) hunt.makers = hunt.makers.map(match => toId(unescape(match))) || [toId(unescape(makerText))];
-		if (makerText && makerText.includes(' and ') && timestamp < 1621755253153n) {
+		if (makerText && makerText.includes(' and ')) {
 			hunt.makers = makerText.split(' and ').map(t => t.split(',')).flat().map(u => toId(unescape(u)));
 		}
 		hunt.finishers = [];
