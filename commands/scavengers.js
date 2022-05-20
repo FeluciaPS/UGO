@@ -72,8 +72,13 @@ module.exports = {
 		ret += `${hunt.finishers.map(x => x.user).join('<br>')}`;
 		points.room.send(`/sendhtmlpage ${user.id}, test, ${ret}`);
 	},
-	scavengerhunt: function(room, user, args) {
-		if (!user.can(points.room, '%'))
-			return;
-	}
+	addminifishhunt: 'addhunt',
+	addfishhunt: 'addhunt',
+	addhunt: function (room, user, args, val, time, cmd) {
+		if (!user.can(points.room, '%')) return;
+		if (!lastHunt) return user.send("No recent hunt is recorded, possibly due to a bot restart. Please add points manually");
+		let res = points.addhunt(lastHunt.makers, lastHunt.finishers, cmd, user.id);
+		if (!res) return user.send("Something went wrong...");
+		return user.send('Points successfully given.');
+	},
 }

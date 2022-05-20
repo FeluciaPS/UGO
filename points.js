@@ -175,10 +175,16 @@ module.exports = {
 		}
 		return true;
 	},
-	addhunt: function (users, mult = 1, source) {
+	addhunt: function (hosts, users, type = "addhunt", source) {
 		if (!this.room) return false;
 
-		let next = 40;
+		let point_scalings = {
+			"addhunt": [45, 38, 32, 25, 20, 15, 4],
+			"addfishhunt": [90, 76, 64, 50, 40, 30, 8],
+			"addminifishhunt": [68, 57, 48, 38, 30, 23, 6]
+		}
+
+		let pointobj = point_scalings[type];
 
 		if (typeof users === "string") users = users.split(',');
 
@@ -189,13 +195,17 @@ module.exports = {
 			this.resetDaily();
 			day = now.getDate();
 		}
+
 		let spotlight = "scavengers" === toId(spotlights[day]);
 		if (spotlights[day] === true) spotlight = this.bosshp <= 0;
+
+		this.addpoints(40, hosts, "scavengers", source);
+		
 		let ret = [];
 		for (let i in users) {
 			let userid = toId(users[i]);
-			let amount = Math.ceil((next > 0 ? next : 3) * mult);
-			if (i == 0) amount = 30;
+			let amount = pointobj[6];
+			if (i < 6) amount = pointobj[i];
 
 			if (!this.points.scavengers[userid]) {
 				this.points.scavengers[userid] = 0;
@@ -213,7 +223,6 @@ module.exports = {
 			if (Users[userid]) this.names[userid] = Users[userid].name
 			if (!this.names[userid]) this.names[userid] = users[i];
 			ret.push(`[${userid}] - ${amount}`);
-			next -= 5;
 		}
 
 		if (this.bosshp < 0) this.bosshp = 0;
@@ -291,6 +300,8 @@ module.exports = {
 		for (let roomid of rooms) {
 			let spotlight = toId(roomid) === toId(spotlights[now.getDate()]);
 			if (spotlights[day] === true) spotlight = this.bosshp <= 0;
+
+			spotlight = false;
 
 			for (let i in users) {
 				let userid = toId(users[i]);
@@ -416,15 +427,15 @@ module.exports = {
 
 		ret += `<hr><h1>Leaderboard for Ultimate Gaming Olympics</h1>`
 		ret += `<div style="overflow:auto;height:70vh"><table style="width:1000px;text-align:center" cellpadding="5" border="1">`;
-		ret += `<tr style="background-color:rgba(140,140,140,0.3)"><th>#</th><th style="width:120px">Name</th><th>Points</th><th>Total Points`
-		ret += `<th>Battle Dome Points</th><th>Game Corner Points</th><th>Mafia Points</th><th>Scavengers Points</th><th>Survivor Points</th><th>Trivia Points</th></tr>`
+		ret += `<tr style="background-color:rgba(140,140,140,0.3)"><th>#</th><th style="width:120px">Name</th><th>Points</th><th>Total Points</th>`
+		ret += `<th>Battle Dome Points</th><th>Board Games Points</th><th>Game Corner Points</th><th>Mafia Points</th><th>Scavengers Points</th><th>Survivor Points</th><th>Trivia Points</th></tr>`
 		for (let i in scores) {
 			if (i == 750) break;
 			let id = scores[i][0];
 			let name = escape(this.names[id]);
 			let pts = scores[i][1];
 			ret += `<tr><td>${parseInt(i)+1}</td><td>${name}</td><td>${pts}</td><td>${scores[i][2]}</td>`
-			ret += `<td>${scores[i][3]}</td><td>${scores[i][4]}</td><td>${scores[i][5]}</td><td>${scores[i][6]}</td><td>${scores[i][7]}</td><td>${scores[i][8]}</td></tr>`;
+			ret += `<td>${scores[i][3]}</td><td>${scores[i][4]}</td><td>${scores[i][5]}</td><td>${scores[i][6]}</td><td>${scores[i][7]}</td><td>${scores[i][8]}</td><td>${scores[i][9]}</td></tr>`;
 		}
 		ret += `</table></div></center></div>`;
 		return ret;
@@ -444,8 +455,8 @@ module.exports = {
 
 			let sobj = Object.values(pscores);
 			sobj.sort((a, b) => b - a);
-			let weighted = Math.floor(sobj[0] + sobj[1] * 1.2 + sobj[2] * 1.4 + sobj[3] * 1.6 + sobj[4] * 1.8 + sobj[5] * 2.0);
-			let total = sobj[0] + sobj[1] + sobj[2] + sobj[3] + sobj[4] + sobj[4];
+			let weighted = Math.floor(sobj[0] + sobj[1] * 1.2 + sobj[2] * 1.4 + sobj[3] * 1.6 + sobj[4] * 1.8 + sobj[5] * 2.0 + sobj[6] * 2.2);
+			let total = sobj[0] + sobj[1] + sobj[2] + sobj[3] + sobj[4] + sobj[5] + sobj[6];
 
 			scores.push([
 				i,

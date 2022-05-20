@@ -40,15 +40,6 @@ module.exports = {
 		if (!res) return user.send("Something went wrong...");
 		return user.send('Points successfully given.');
 	},
-	addminifishhunt: 'addhunt',
-	addfishhunt: 'addhunt',
-	addhunt: function (room, user, args, val, time, cmd) {
-		if (!user.can(points.room, '%')) return;
-		if (args.length < 2) return user.send('Scavenger hunts need at the very least one winner and a host');
-		let res = points.addhunt(args, cmd === 'addfishhunt' ? 2 : (cmd === 'addhunt' ? 1 : 1.5), user.id);
-		if (!res) return user.send("Something went wrong...");
-		return user.send('Points successfully given.');
-	},
 	addtriviafish: function (room, user, args) {
 		if (!user.can(points.room, '%')) return;
 		if (room !== user && room.id !== 'trivia') return user.send('This command can only be used in PMs or the Trivia room');
