@@ -115,10 +115,11 @@ module.exports = {
 		]
 		if (!user.can(points.room, '%')) return points.room.send(`/pmuhtml ${user.id}, help, ${ret.join('<br>')}`);;
 		ret = ret.concat([
+			`<b>;authhunt</b> - gives auth hunt points for a certain room - <code>;authhunt [username], [room]</code>`,
 			`<b>;addpoints</b> - adds points to any amount of users - <code>;addpoints [amount], [room], [user1], [user2], ...</code>`,
 			`<b>;eventpoints</b> - adds points to any amount of users, ignoring spotlight multipliers - <code>;eventpoints [amount], [room], [user1], [user2], ...</code>`,
-			`<b>;addhunt</b> - adds points for a scavenger hunt - <code>;addhunt [host], [user1], [user2], ...</code>`,
-			`<b>;addfishhunt</b> and <b>;addminifishhunt</b> - same as ;addhunt, but give out more points for fish and mini fish`,
+			`<b>;addhunt</b> - adds points for the last recorded scavenger hunt - <code>;addhunt</code>`,
+			`<b>;addfishhunt</b> and <b>;addminifishhunt</b> - same as ;addhunt, but give out points for fish and mini fish`,
 			`<b>;addtriviafish</b> - Gives out trivia points according to the last official - <code>;addtriviafish</code>`
 		])
 		return points.room.send(`/pmuhtml ${user.id}, help, ${ret.join('<br>')}`);
