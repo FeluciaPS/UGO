@@ -107,13 +107,16 @@ module.exports = {
 		return user.send('Points successfully given.');
 	},
 	help: function (room, user, args) {
+		let pad = function(txt) {
+			return `<div style="padding:80px">${txt}</div>`;
+		}
 		let ret = [
 			`<b>;leaderboard</b> - displays the leaderboard for a room, or overall if no room is given - <code>;leaderboard [room]</code>`,
 			`<b>;credits</b> - displays bot credits - <code>;credits</code>`,
 			`<b>;git</b> - shows a link to the bot code, if one is configured - <code>;git</code>`,
 			`<b>;points</b> - display points for a user, or yourself if no user is given - <code>;points [user]</code>`
 		]
-		if (!user.can(points.room, '%')) return points.room.send(`/sendhtmlpage ${user.id}, help, ${ret.join('<br>')}`);;
+		if (!user.can(points.room, '%')) return points.room.send(`/sendhtmlpage ${user.id}, help, ${pad(ret.join('<br>'))}`);;
 		ret = ret.concat([
 			`<b>;authhunt</b> - gives auth hunt points for a certain room - <code>;authhunt [username], [room]</code>`,
 			`<b>;addpoints</b> - adds points to any amount of users - <code>;addpoints [amount], [room], [user1], [user2], ...</code>`,
@@ -122,6 +125,6 @@ module.exports = {
 			`<b>;addfishhunt</b> and <b>;addminifishhunt</b> - same as ;addhunt, but give out points for fish and mini fish`,
 			`<b>;addtriviafish</b> - Gives out trivia points according to the last official - <code>;addtriviafish</code>`
 		])
-		return points.room.send(`/sendhtmlpage ${user.id}, help, ${ret.join('<br>')}`);
+		return points.room.send(`/sendhtmlpage ${user.id}, help, ${pad(ret.join('<br>'))}`);
 	}
 }
