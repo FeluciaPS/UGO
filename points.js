@@ -147,7 +147,9 @@ module.exports = {
 		for (let i in data) {
 			let userid = toId(data[i][0]);
 			let amount = Math.ceil(1 * parseInt(data[i][1]));
-
+			if (i == 0) amount += 20;
+			if (i == 1) amount += 10;
+			if (i == 2) amount += 6;
 			if (!this.points.trivia[userid]) {
 				this.points.trivia[userid] = 0;
 				this.daypoints.trivia[userid] = 0;
