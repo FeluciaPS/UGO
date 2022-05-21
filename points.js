@@ -200,7 +200,7 @@ module.exports = {
 		if (spotlights[day] === true) spotlight = this.bosshp <= 0;
 
 		this.addpoints(40, hosts, "scavengers", source);
-		
+
 		let ret = [];
 		for (let i in users) {
 			let userid = toId(users[i]);
@@ -325,7 +325,7 @@ module.exports = {
 			if (this.bosshp < 0) this.bosshp = 0;
 			this.save(roomid);
 		}
-		this.room.send(`/modnote ${amount} auth hunt points given to ${users.map(x => '[' + toId(x) + ']').join(', ')} for ${room} by [${source}]`)
+		this.room.send(`/modnote ${amount * 2} auth hunt points given to ${users.map(x => '[' + toId(x) + ']').join(', ')} for ${room} by [${source}]`)
 		return true;
 	},
 	addeventpoints: function (amount, users, room, source) {
