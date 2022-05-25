@@ -86,6 +86,7 @@ module.exports = {
 		ret += "</table>";
 		points.room.send(`/pmuhtml ${user.id}, points-${Math.floor(Math.random() * 10000)}, ${ret}`);
 	},
+	authunt: 'authhunt',
 	authhunt: function (room, user, args) {
 		if (!points.room) return user.send("Bot is not in the hub room, or none is configured.");
 		if (!user.can(points.room, '+')) return;

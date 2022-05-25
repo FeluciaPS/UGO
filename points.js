@@ -17,6 +17,10 @@ let getRoomName = function (roomid) {
 	return roomid;
 }
 
+let roundPoints = function(points) {
+	if (points < 0) return Math.ceil(points);
+	return Math.floor(points);
+}
 let {escape, unescape} = require('html-escaper');
 const storage = require('./storage.js');
 const {
@@ -154,9 +158,9 @@ module.exports = {
 				this.points.trivia[userid] = 0;
 				this.daypoints.trivia[userid] = 0;
 			}
-			this.points.trivia[userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
-			this.daypoints.trivia[userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
-			this.bosshp -= Math.floor(amount * (spotlight ? 1.5 : 1));
+			this.points.trivia[userid] += roundPoints(amount * (spotlight ? 1.5 : 1));
+			this.daypoints.trivia[userid] += roundPoints(amount * (spotlight ? 1.5 : 1));
+			this.bosshp -= roundPoints(amount * (spotlight ? 1.5 : 1));
 			if (this.daypoints.trivia[userid] > pointcap.trivia + (spotlight ? 50 : 0)) {
 				let differential = this.daypoints.trivia[userid] - pointcap.trivia + (spotlight ? 50 : 0);
 				this.points.trivia[userid] -= differential;
@@ -213,9 +217,9 @@ module.exports = {
 				this.points.scavengers[userid] = 0;
 				this.daypoints.scavengers[userid] = 0;
 			}
-			this.points.scavengers[userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
-			this.daypoints.scavengers[userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
-			this.bosshp -= Math.floor(amount * (spotlight ? 1.5 : 1));
+			this.points.scavengers[userid] += roundPoints(amount * (spotlight ? 1.5 : 1));
+			this.daypoints.scavengers[userid] += roundPoints(amount * (spotlight ? 1.5 : 1));
+			this.bosshp -= roundPoints(amount * (spotlight ? 1.5 : 1));
 			if (this.daypoints.scavengers[userid] > pointcap.scavengers + (spotlight ? 50 : 0)) {
 				let differential = this.daypoints.scavengers[userid] - pointcap.scavengers + (spotlight ? 50 : 0);
 				this.points.scavengers[userid] -= differential;
@@ -259,9 +263,9 @@ module.exports = {
 				this.points[roomid][userid] = 0;
 				this.daypoints[roomid][userid] = 0;
 			}
-			this.points[roomid][userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
-			this.daypoints[roomid][userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
-			if (this.bosshp > 0) this.bosshp -= Math.floor(amount * (spotlight ? 1.5 : 1));
+			this.points[roomid][userid] += roundPoints(amount * (spotlight ? 1.5 : 1));
+			this.daypoints[roomid][userid] += roundPoints(amount * (spotlight ? 1.5 : 1));
+			if (this.bosshp > 0) this.bosshp -= roundPoints(amount * (spotlight ? 1.5 : 1));
 			if (this.daypoints[roomid][userid] > pointcap[roomid] + (spotlight ? 50 : 0)) {
 				let differential = this.daypoints[roomid][userid] - pointcap[roomid] + (spotlight ? 50 : 0);
 				this.points[roomid][userid] -= differential;
@@ -276,8 +280,8 @@ module.exports = {
 		this.save(roomid);
 		let users2 = [];
 		if ((users.map(x => '[' + toId(x) + ']').join(', ')).length > 250) users2 = users.slice(Math.floor(users.length / 2));
-		this.room.send(`/modnote ${Math.floor(amount * (spotlight ? 1.5 : 1))} point${amount === 1 ? "" : "s"} given to ${users.map(x => '[' + toId(x) + ']').join(', ')} for ${room} by [${source}]`)
-		if (users2.length) this.room.send(`/modnote ${Math.floor(amount * (spotlight ? 1.5 : 1))} point${amount === 1 ? "" : "s"} given to ${users2.map(x => '[' + toId(x) + ']').join(', ')} for ${room} by [${source}]`)
+		this.room.send(`/modnote ${roundPoints(amount * (spotlight ? 1.5 : 1))} point${amount === 1 ? "" : "s"} given to ${users.map(x => '[' + toId(x) + ']').join(', ')} for ${room} by [${source}]`)
+		if (users2.length) this.room.send(`/modnote ${roundPoints(amount * (spotlight ? 1.5 : 1))} point${amount === 1 ? "" : "s"} given to ${users2.map(x => '[' + toId(x) + ']').join(', ')} for ${room} by [${source}]`)
 		return true;
 	},
 	addauthhunt: function (amount, users, room, source) {
@@ -353,8 +357,8 @@ module.exports = {
 				this.points[roomid][userid] = 0;
 				this.daypoints[roomid][userid] = 0;
 			}
-			this.points[roomid][userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
-			this.daypoints[roomid][userid] += Math.floor(amount * (spotlight ? 1.5 : 1));
+			this.points[roomid][userid] += roundPoints(amount * (spotlight ? 1.5 : 1));
+			this.daypoints[roomid][userid] += roundPoints(amount * (spotlight ? 1.5 : 1));
 			if (this.bosshp > 0) this.bosshp -= amount;
 			if (this.daypoints[roomid][userid] > pointcap[roomid] + (spotlight ? 50 : 0)) {
 				let differential = this.daypoints[roomid][userid] - pointcap[roomid] + (spotlight ? 50 : 0);
@@ -391,7 +395,7 @@ module.exports = {
 
 			let sobj = Object.values(pscores);
 			sobj.sort((a, b) => b - a);
-			let weighted = Math.floor(sobj[0] + sobj[1] * 1.2 + sobj[2] * 1.4 + sobj[3] * 1.6 + sobj[4] * 1.8 + sobj[5] * 2.0 + sobj[6] * 2.2);
+			let weighted = roundPoints(sobj[0] + sobj[1] * 1.2 + sobj[2] * 1.4 + sobj[3] * 1.6 + sobj[4] * 1.8 + sobj[5] * 2.0 + sobj[6] * 2.2);
 			let total = sobj[0] + sobj[1] + sobj[2] + sobj[3] + sobj[4] + sobj[5] + sobj[6];
 
 			scores.push([
@@ -457,7 +461,7 @@ module.exports = {
 
 			let sobj = Object.values(pscores);
 			sobj.sort((a, b) => b - a);
-			let weighted = Math.floor(sobj[0] + sobj[1] * 1.2 + sobj[2] * 1.4 + sobj[3] * 1.6 + sobj[4] * 1.8 + sobj[5] * 2.0 + sobj[6] * 2.2);
+			let weighted = roundPoints(sobj[0] + sobj[1] * 1.2 + sobj[2] * 1.4 + sobj[3] * 1.6 + sobj[4] * 1.8 + sobj[5] * 2.0 + sobj[6] * 2.2);
 			let total = sobj[0] + sobj[1] + sobj[2] + sobj[3] + sobj[4] + sobj[5] + sobj[6];
 
 			scores.push([
