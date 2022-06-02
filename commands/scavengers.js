@@ -77,7 +77,7 @@ module.exports = {
 	addhunt: function (room, user, args, val, time, cmd) {
 		if (!user.can(points.room, '%')) return;
 		if (!lastHunt) return user.send("No recent hunt is recorded, possibly due to a bot restart. Please add points manually");
-		let res = points.addhunt(lastHunt.makers, lastHunt.finishers, cmd, user.id);
+		let res = points.addhunt(lastHunt.makers, lastHunt.finishers.map(x => x.user), cmd, user.id);
 		if (!res) return user.send("Something went wrong...");
 		return user.send('Points successfully given.');
 	},
