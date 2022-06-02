@@ -438,7 +438,7 @@ module.exports = {
 		ret += `<tr style="background-color:rgba(140,140,140,0.3)"><th>#</th><th style="width:120px">Name</th><th>Points</th><th>Total Points</th>`
 		ret += `<th>Battle Dome Points</th><th>Board Games Points</th><th>Game Corner Points</th><th>Mafia Points</th><th>Scavengers Points</th><th>Survivor Points</th><th>Trivia Points</th></tr>`
 		for (let i in scores) {
-			if (i == 750) break;
+			if (i == 500) break;
 			let id = scores[i][0];
 			let name = escape(this.names[id]);
 			let pts = scores[i][1];
