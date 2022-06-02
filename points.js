@@ -287,7 +287,7 @@ module.exports = {
 	addauthhunt: function (amount, users, room, source) {
 		if (!this.room) return false;
 
-		amount = amount / 2;
+		amounts = [4, 8];
 
 		let rooms = [toId(room), "survivor"];
 		for (let i of Config.GameRooms) {
@@ -303,7 +303,9 @@ module.exports = {
 			day = now.getDate();
 			if (spotlights[now.getDate()]) points.room.send(`/wall Spotlight day for ${spotlights[now.getDate()]} started!`)
 		}
-		for (let roomid of rooms) {
+		for (let num in rooms) {
+			let roomid = rooms[num];
+			let amount = amounts[num];
 			let spotlight = toId(roomid) === toId(spotlights[now.getDate()]);
 			if (spotlights[day] === true) spotlight = this.bosshp <= 0;
 
