@@ -333,7 +333,7 @@ module.exports = {
 			if (this.bosshp < 0) this.bosshp = 0;
 			this.save(roomid);
 		}
-		this.room.send(`/modnote ${amount * 2} auth hunt points given to ${users.map(x => '[' + toId(x) + ']').join(', ')} for ${room} by [${source}]`)
+		this.room.send(`/modnote ${amount.join(", ")} auth hunt points given to ${users.map(x => '[' + toId(x) + ']').join(', ')} for ${room} by [${source}]`)
 		return true;
 	},
 	addeventpoints: function (amount, users, room, source) {
