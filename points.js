@@ -85,6 +85,7 @@ let day = new Date(Date.now()).getDate();
 
 module.exports = {
 	room: false,
+	disabled: true,
 	populate: function () {
 		for (let i = 1; i < 150; i++) {
 			for (let x = 1; x < 150; x++) {
@@ -134,6 +135,7 @@ module.exports = {
 		this.save();
 	},
 	addtrivia: function (data) {
+		if (this.disabled) return false;
 		data = data.replace("The scores for the last Trivia game are: ", "").split(', ').map(x => [x.split(" ")[0], toId(x.split(" ")[1])]);
 		let spotlight = "trivia" === toId(spotlights[day]);
 
@@ -182,6 +184,7 @@ module.exports = {
 		return true;
 	},
 	addhunt: function (hosts, users, type = "addhunt", source) {
+		if (this.disabled) return false;
 		if (!this.room) return false;
 
 		let point_scalings = {
@@ -238,6 +241,7 @@ module.exports = {
 		return true;
 	},
 	addpoints: function (amount, users, room, source) {
+		if (this.disabled) return false;
 		if (!this.room) return false;
 
 		roomid = toId(room);
@@ -285,6 +289,7 @@ module.exports = {
 		return true;
 	},
 	addauthhunt: function (amount, users, room, source) {
+		if (this.disabled) return false;
 		if (!this.room) return false;
 
 		amounts = [4, 8];
@@ -337,6 +342,7 @@ module.exports = {
 		return true;
 	},
 	addeventpoints: function (amount, users, room, source) {
+		if (this.disabled) return false;
 		if (!this.room) return false;
 
 		roomid = toId(room);
