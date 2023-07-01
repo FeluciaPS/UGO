@@ -123,7 +123,7 @@ module.exports = {
 			`<b>;addpoints</b> - adds points to any amount of users - <code>;addpoints [amount], [room], [user1], [user2], ...</code>`,
 			`<b>;eventpoints</b> - adds points to any amount of users, ignoring spotlight multipliers - <code>;eventpoints [amount], [room], [user1], [user2], ...</code>`,
 			`<b>;addhunt</b> - adds points for the last recorded scavenger hunt - <code>;addhunt</code>`,
-			`<b>;addfishhunt</b> and <b>;addminifishhunt</b> - same as ;addhunt, but give out points for fish and mini fish`,
+			`<b>;addfishhunt</b>, <b>;addtwisthunt</b> and <b>;addminifishhunt</b> - same as ;addhunt, but give out points for fish, twist, and mini fish`,
 			`<b>;addtriviafish</b> - Gives out trivia points according to the last official - <code>;addtriviafish</code>`
 		])
 		return points.room.send(`/sendhtmlpage ${user.id}, help, ${pad(ret.join('<br>'))}`);

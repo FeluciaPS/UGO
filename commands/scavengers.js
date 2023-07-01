@@ -74,6 +74,7 @@ module.exports = {
 	},
 	addminifishhunt: 'addhunt',
 	addfishhunt: 'addhunt',
+	addtwisthunt: 'addhunt',
 	addhunt: function (room, user, args, val, time, cmd) {
 		if (!user.can(points.room, '%')) return;
 		if (!lastHunt) return user.send("No recent hunt is recorded, possibly due to a bot restart. Please add points manually");

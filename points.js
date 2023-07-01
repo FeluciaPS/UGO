@@ -60,21 +60,21 @@ let uploadToHastebin = function (toUpload, callback) {
 
 const pointcap = 999999999;
 const spotlights = {
-	23: "Board Games",
-	24: "Battle Dome",
-	25: "Trivia",
-	26: "Mafia",
-	27: "Scavengers",
-	30: "Survivor",
-	31: "Game Corner",
-	1: "Board Games",
-	2: "Battle Dome",
-	3: "Trivia",
-	6: "Survivor",
-	7: "Mafia",
-	8: "Scavengers",
-	9: "Game Corner",
-	10: true
+	10: "Battle Dome",
+	11: "Mafia",
+	12: "Board Games",
+	13: "Scavengers",
+	14: "Game Corner",
+	17: "Trivia",
+	18: "Survivor",
+	19: "Battle Dome",
+	20: "Mafia",
+	21: "Board Games",
+	24: "Scavengers",
+	25: "Game Corner",
+	26: "Trivia",
+	27: "Survivor",
+	28: true
 }
 
 // Max HP for gamers
@@ -188,9 +188,10 @@ module.exports = {
 		if (!this.room) return false;
 
 		let point_scalings = {
-			"addhunt": [45, 38, 32, 25, 20, 15, 4],
-			"addfishhunt": [90, 76, 64, 50, 40, 30, 8],
-			"addminifishhunt": [68, 57, 48, 38, 30, 23, 6]
+			"addhunt": [50, 42, 34, 26, 18, 10, 5],
+			"addminifishhunt": [70, 60, 50, 40, 30, 20, 10],
+			"addfishhunt": [100, 88, 75, 63, 50, 37, 25],
+			"addtwisthunt": [150, 135, 120, 95, 80, 65, 30]
 		}
 
 		let pointobj = point_scalings[type];
