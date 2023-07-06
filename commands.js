@@ -13,6 +13,10 @@ let commands = {
         let ago = Math.floor((Date.now() - room.lasttour[0]) / 60000);
         return room.send(`**${room.lasttour[1]}** ${ago} minute${ago === 1 ? '' : 's'} ago.`);
     },
+    ugoroom: function (room, user, args) {
+        let target = user.can(room, '+') ? room : user;
+        target.send(`<<${toId(Config.hubroom)}>>`);
+    },
     mail: function (room, user, args, val) {
         if (!user.can(" ")) return;
         let target = args[0];
