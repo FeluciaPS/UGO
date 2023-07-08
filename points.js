@@ -85,7 +85,7 @@ let day = new Date(Date.now()).getDate();
 
 module.exports = {
 	room: false,
-	disabled: true,
+	disabled: false,
 	populate: function () {
 		for (let i = 1; i < 150; i++) {
 			for (let x = 1; x < 150; x++) {
