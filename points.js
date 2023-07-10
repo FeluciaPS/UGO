@@ -209,7 +209,7 @@ module.exports = {
 		let spotlight = "scavengers" === toId(spotlights[day]);
 		if (spotlights[day] === true) spotlight = this.bosshp <= 0;
 
-		this.addpoints(40, hosts, "scavengers", source);
+		this.addpoints(46, hosts, "scavengers", source);
 
 		let ret = [];
 		for (let i in users) {
