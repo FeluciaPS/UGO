@@ -320,7 +320,7 @@ module.exports = {
 
 		if (this.bosshp < 0) this.bosshp = 0;
 		this.save(roomid);
-		let users = Object.keys(users).map(toId);
+		let users = Object.keys(json).map(toId);
 		while (users.length) {
 			let part = users.slice(0, 10);
 			let users = users.slice(10);
