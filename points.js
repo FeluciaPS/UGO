@@ -60,21 +60,22 @@ let uploadToHastebin = function (toUpload, callback) {
 
 const pointcap = 999999999;
 const spotlights = {
-	10: "Battle Dome",
-	11: "Mafia",
-	12: "Board Games",
-	13: "Scavengers",
-	14: "Game Corner",
-	17: "Trivia",
-	18: "Survivor",
-	19: "Battle Dome",
-	20: "Mafia",
-	21: "Board Games",
-	24: "Scavengers",
-	25: "Game Corner",
+	16: "Trick House",
+	18: "Battle Dome"",
+	19: "Board Games",
+	20: "Game Corner",
+	21: "Mafia",
+	22: "Scavengers",
+	25: "Survivor",
 	26: "Trivia",
-	27: "Survivor",
-	28: true
+	27: "Trick house",
+	28: "Battle Dome",
+	29: "Board Games",
+	1: "Game Corner",
+	2: "Mafia",
+	3: "Scavengers",
+	4: "Survivor",
+	5: "Trivia"
 }
 
 // Max HP for gamers
