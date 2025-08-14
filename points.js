@@ -323,7 +323,7 @@ module.exports = {
 		let users = Object.keys(json).map(toId);
 		while (users.length) {
 			let part = users.slice(0, 10);
-			let users = users.slice(10);
+			users = users.slice(10);
 
 			this.room.send(`/modnote Points manually updated for ${part.map(x => '[' + toId(x) + ']').join(', ')} in ${room} by [${source}]`)
 		}
