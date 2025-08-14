@@ -47,7 +47,7 @@ module.exports = {
 		return user.send('Points successfully given.');
 	},
 	setpoints: function(room, user, args) {
-		if (!this.points.room) return user.send("Bot is not in the hub room, or none is configured");
+		if (!points.room) return user.send("Bot is not in the hub room, or none is configured");
 		if (!user.can(points.room, '%')) return;
 
 		// Check input
@@ -65,7 +65,7 @@ module.exports = {
 		return user.send('Points successfully set.');
 	},
 	setpointsfromjson: async function(room, user, args) {
-		if (!this.points.room) return user.send("Bot is not in the hub room, or none is configured");
+		if (!points.room) return user.send("Bot is not in the hub room, or none is configured");
 		if (!user.can(points.room, '%')) return;
 
 		if (args.length < 2) return user.send("Usage: ``;setpointsfromjson [room], [json/pastie.io link]``.");
