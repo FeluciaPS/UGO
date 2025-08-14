@@ -119,13 +119,14 @@ module.exports = {
 		if (!target) target = user.id;
 		if (!points.names[target]) return user.send(`${target} has no points.`);
 		let scores = [
-			["Battle Dome", points.points.battledome[target] ? points.points.battledome[target] : 0],
-			["Board Games", points.points.boardgames[target] ? points.points.boardgames[target] : 0],
-			["Game Corner", points.points.gamecorner[target] ? points.points.gamecorner[target] : 0],
-			["Mafia", points.points.mafia[target] ? points.points.mafia[target] : 0],
-			["Scavengers", points.points.scavengers[target] ? points.points.scavengers[target] : 0],
-			["Survivor", points.points.survivor[target] ? points.points.survivor[target] : 0],
-			["Trivia", points.points.trivia[target] ? points.points.trivia[target] : 0],
+			["Battle Dome", points.points.battledome[target] || 0],
+			["Board Games", points.points.boardgames[target] || 0],
+			["Game Corner", points.points.gamecorner[target] || 0],
+			["Mafia", points.points.mafia[target] || 0],
+			["Scavengers", points.points.scavengers[target] || 0],
+			["Survivor", points.points.survivor[target] || 0],
+			["Trick House", points.points.trickhouse[target] || 0],
+			["Trivia", points.points.trivia[target] || 0],
 		]
 		scores.sort((a, b) => b[1] - a[1]);
 		let weighted = Math.floor(scores[0][1] + scores[1][1] * 1.2 + scores[2][1] * 1.4 + scores[3][1] * 1.6 + scores[4][1] * 1.8 + scores[5][1] * 2.0 + scores[6][1] * 2.2);
