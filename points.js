@@ -185,6 +185,40 @@ module.exports = {
 		}
 		return true;
 	},
+	addmafiapoints: function (count, host, winners, losers, source, fish) {
+		if (this.disabled) return false;
+		if (!this.room) return false;
+
+		if (count > 20) count = 20;
+		if (count < 4) return false;
+		count -= 4;
+
+		let point_scalings = {
+			 win: [9, 12, 14, 16, 18, 21, 23, 25, 27, 30, 32, 34, 46, 39, 41, 43, 45],
+			host: [7,  9, 11, 12, 14, 16, 17, 19, 20, 23, 24, 26, 27, 29, 31, 32, 34],
+			play: [5,  6,  7,  9,  9, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22, 23]
+		}
+
+		if (this.bosshp === undefined) this.bosshp = maxHP;
+
+		let now = new Date(Date.now());
+		if (now.getDate() != day) {
+			this.resetDaily();
+			day = now.getDate();
+		}
+
+		let spotlight = "mafia" === toId(spotlights[day]);
+		if (spotlights[day] === true) spotlight = this.bosshp <= 0;
+
+		if (fish) {
+			this.addpoints(60, winners, "mafia", source);
+			this.addpoints(30, losers, "mafia", source);
+		}
+
+		this.addpoints(point_scalings.win[count], winners, "mafia", source);
+		this.addpoints(point_scalings.play[count], losers, "mafia", source);
+		this.addpoints(point_scalings.host[count], host, "mafia", source);
+	},
 	addhunt: function (hosts, users, type = "addhunt", source) {
 		if (this.disabled) return false;
 		if (!this.room) return false;
