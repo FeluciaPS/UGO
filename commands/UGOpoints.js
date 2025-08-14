@@ -24,6 +24,10 @@ let download = async function(url) {
 
 let cooldowns = {};
 module.exports = {
+	exportleaderboard: function (room, user, args) {
+		if (!user.can(Config.hubroom, '#')) return false;
+		points.exportLeaderboard(room);
+	},
 	savepoints: function (room, user, args) {
 		if (!user.can(Config.hubroom, '#')) return false;
 		points.save();
