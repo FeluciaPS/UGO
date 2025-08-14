@@ -60,21 +60,22 @@ let uploadToHastebin = function (toUpload, callback) {
 
 const pointcap = 999999999;
 const spotlights = {
-	10: "Battle Dome",
-	11: "Mafia",
-	12: "Board Games",
-	13: "Scavengers",
-	14: "Game Corner",
-	17: "Trivia",
-	18: "Survivor",
-	19: "Battle Dome",
-	20: "Mafia",
-	21: "Board Games",
-	24: "Scavengers",
-	25: "Game Corner",
+	16: "Trick House",
+	18: "Battle Dome"",
+	19: "Board Games",
+	20: "Game Corner",
+	21: "Mafia",
+	22: "Scavengers",
+	25: "Survivor",
 	26: "Trivia",
-	27: "Survivor",
-	28: true
+	27: "Trick house",
+	28: "Battle Dome",
+	29: "Board Games",
+	1: "Game Corner",
+	2: "Mafia",
+	3: "Scavengers",
+	4: "Survivor",
+	5: "Trivia"
 }
 
 // Max HP for gamers
@@ -152,10 +153,11 @@ module.exports = {
 		let ret = [];
 		for (let i in data) {
 			let userid = toId(data[i][0]);
-			let amount = Math.ceil(1 * parseInt(data[i][1]));
-			if (i == 0) amount += 20;
-			if (i == 1) amount += 10;
-			if (i == 2) amount += 6;
+			let amount = Math.ceil(0.5 * parseInt(data[i][1])); // Every official		1 point per 2 triv points (rounded up)
+			if (data[i] >= 5) amount += 2; // Every official		2 bonus points upon getting 5 triv points
+			if (i == 0) amount += 10; // Every official winners		10 / 5 / 3
+			if (i == 1) amount += 5;
+			if (i == 2) amount += 3;
 			if (!this.points.trivia[userid]) {
 				this.points.trivia[userid] = 0;
 				this.daypoints.trivia[userid] = 0;
@@ -188,10 +190,11 @@ module.exports = {
 		if (!this.room) return false;
 
 		let point_scalings = {
-			"addhunt": [50, 42, 34, 26, 18, 10, 5],
-			"addminifishhunt": [70, 60, 50, 40, 30, 20, 10],
-			"addfishhunt": [100, 88, 75, 63, 50, 37, 25],
-			"addtwisthunt": [150, 135, 120, 95, 80, 65, 30]
+			"addhunt": [50, 42, 34, 26, 20, 15, 10],
+			"addminifishhunt": [70, 60, 50, 40, 30, 25, 20],
+			"addfishhunt": [100, 88, 75, 63, 50, 40, 30],
+			"addtwisthunt": [150, 135, 120, 95, 80, 65, 40],
+			"addodysseyhunt": [200, 175, 150, 125, 100, 80, 50]
 		}
 
 		let pointobj = point_scalings[type];
@@ -209,7 +212,7 @@ module.exports = {
 		let spotlight = "scavengers" === toId(spotlights[day]);
 		if (spotlights[day] === true) spotlight = this.bosshp <= 0;
 
-		this.addpoints(46, hosts, "scavengers", source);
+		this.addpoints(46, hosts, "scavengers", source); 
 
 		let ret = [];
 		for (let i in users) {
@@ -289,7 +292,7 @@ module.exports = {
 		if (users2.length) this.room.send(`/modnote ${roundPoints(amount * (spotlight ? 1.5 : 1))} point${amount === 1 ? "" : "s"} given to ${users2.map(x => '[' + toId(x) + ']').join(', ')} for ${room} by [${source}]`)
 		return true;
 	},
-	addauthhunt: function (amount, users, room, source) {
+	/*addauthhunt: function (amount, users, room, source) { Deprecated
 		if (this.disabled) return false;
 		if (!this.room) return false;
 
@@ -341,7 +344,7 @@ module.exports = {
 		}
 		this.room.send(`/modnote ${amounts.join(", ")} auth hunt points given to ${users.map(x => '[' + toId(x) + ']').join(', ')} for ${room} by [${source}]`)
 		return true;
-	},
+	},*/
 	addeventpoints: function (amount, users, room, source) {
 		if (this.disabled) return false;
 		if (!this.room) return false;
