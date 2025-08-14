@@ -550,19 +550,20 @@ module.exports = {
 		let scores = [];
 		for (let i in this.names) {
 			let pscores = {
-				battledome: this.points.battledome[i] ? this.points.battledome[i] : 0,
-				boardgames: this.points.boardgames[i] ? this.points.boardgames[i] : 0,
-				gamecorner: this.points.gamecorner[i] ? this.points.gamecorner[i] : 0,
-				mafia: this.points.mafia[i] ? this.points.mafia[i] : 0,
-				scavengers: this.points.scavengers[i] ? this.points.scavengers[i] : 0,
-				survivor: this.points.survivor[i] ? this.points.survivor[i] : 0,
-				trivia: this.points.trivia[i] ? this.points.trivia[i] : 0,
+				battledome: this.points.battledome[i] || 0,
+				boardgames: this.points.boardgames[i] || 0,
+				gamecorner: this.points.gamecorner[i] || 0,
+				mafia: this.points.mafia[i] || 0,
+				scavengers: this.points.scavengers[i] || 0,
+				survivor: this.points.survivor[i] || 0,
+				trickhouse: this.points.trickhouse[i] || 0,
+				trivia: this.points.trivia[i] || 0,
 			}
 
 			let sobj = Object.values(pscores);
 			sobj.sort((a, b) => b - a);
-			let weighted = roundPoints(sobj[0] + sobj[1] * 1.2 + sobj[2] * 1.4 + sobj[3] * 1.6 + sobj[4] * 1.8 + sobj[5] * 2.0 + sobj[6] * 2.2);
-			let total = sobj[0] + sobj[1] + sobj[2] + sobj[3] + sobj[4] + sobj[5] + sobj[6];
+			let weighted = roundPoints(sobj[0] + sobj[1] * 1.2 + sobj[2] * 1.4 + sobj[3] * 1.6 + sobj[4] * 1.8 + sobj[5] * 2.0 + sobj[6] * 2.2 + sobj[7] * 2.4);
+			let total = sobj[0] + sobj[1] + sobj[2] + sobj[3] + sobj[4] + sobj[5] + sobj[6] + sobj[7];
 
 			scores.push([
 				i,
@@ -574,6 +575,7 @@ module.exports = {
 				pscores.mafia,
 				pscores.scavengers,
 				pscores.survivor,
+				pscores.trickhouse,
 				pscores.trivia
 			]);
 		}
@@ -586,9 +588,9 @@ module.exports = {
 		}
 
 		let ret = "";
-		ret += "+------+---------------------+-------+-------+-------+-------+-------+-------+-------+-------+-------+\n";
-		ret += "|    # |              userid | Struc | Total |    BD |    BG |    GC | Mafia | Scavs |  Surv |  Triv |\n";
-		ret += "+------+---------------------+-------+-------+-------+-------+-------+-------+-------+-------+-------+\n";
+		ret += "+------+---------------------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+\n";
+		ret += "|    # |              userid | Struc | Total |    BD |    BG |    GC | Mafia | Scavs |  Surv |    TH |  Triv |\n";
+		ret += "+------+---------------------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+\n";
 
 		for (let i = 0; i < scores.length; i++) {
 			let r = scores[i];
@@ -599,7 +601,7 @@ module.exports = {
 			}
 			ret += "|\n";
 		}
-		ret += "+------+---------------------+-------+-------+-------+-------+-------+-------+-------+-------+-------+"
+		ret += "+------+---------------------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+"
 		uploadToHastebin(JSON.stringify(scores, null, 2), function(res1) {
 			uploadToHastebin(ret, function(res2) {
 				room.send(`${res1} ${res2}`);
