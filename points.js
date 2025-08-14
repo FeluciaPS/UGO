@@ -61,7 +61,7 @@ let uploadToHastebin = function (toUpload, callback) {
 const pointcap = 999999999;
 const spotlights = {
 	16: "Trick House",
-	18: "Battle Dome"",
+	18: "Battle Dome",
 	19: "Board Games",
 	20: "Game Corner",
 	21: "Mafia",
