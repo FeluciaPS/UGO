@@ -244,11 +244,49 @@ module.exports = {
 		this.room.send(`/mn Scavenger hunt awarded by [${source}]: ${ret.join(', ')}`);
 		return true;
 	},
+	setpoints: function (amount, users, room, source) {
+		if (this.disabled) return false;
+		if (!this.room) return false;
+
+		let roomid = toId(room);
+
+		for (let i of Config.GameRooms) {
+			if (toId(i) === roomid) room = i;
+		}
+		if (typeof users === "string") users = users.split(',');
+		if (this.bosshp === undefined) this.bosshp = maxHP;
+
+		let now = new Date(Date.now());
+		if (now.getDate() != day) {
+			this.resetDaily();
+			day = now.getDate();
+			if (spotlights[now.getDate()]) points.room.send(`/wall Spotlight day for ${spotlights[now.getDate()]} started!`)
+		}
+		let spotlight = toId(roomid) === toId(spotlights[now.getDate()]);
+		if (spotlights[day] === true) spotlight = this.bosshp <= 0;
+
+		for (let i in users) {
+			let userid = toId(users[i]);
+			this.points[roomid][userid] = amount;
+
+			if (Users[userid]) this.names[userid] = Users[userid].name
+			if (!this.names[userid]) this.names[userid] = users[i];
+		}
+
+		if (this.bosshp < 0) this.bosshp = 0;
+		this.save(roomid);
+		let users2 = [];
+		if ((users.map(x => '[' + toId(x) + ']').join(', ')).length > 250) users2 = users.slice(Math.floor(users.length / 2));
+		this.room.send(`/modnote Points set to ${amount} for ${users.map(x => '[' + toId(x) + ']').join(', ')} in ${room} by [${source}]`)
+		if (users2.length) this.room.send(`/modnote Points set to ${amount} for ${users2.map(x => '[' + toId(x) + ']').join(', ')} in ${room} by [${source}]`)
+
+		return true;
+	},
 	addpoints: function (amount, users, room, source) {
 		if (this.disabled) return false;
 		if (!this.room) return false;
 
-		roomid = toId(room);
+		let roomid = toId(room);
 		for (let i of Config.GameRooms) {
 			if (toId(i) === roomid) room = i;
 		}

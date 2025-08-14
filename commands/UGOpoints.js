@@ -10,7 +10,7 @@ module.exports = {
 
 		// Check input
 		if (args.length < 3) return user.send("Usage: ``;addpoints [amount], [room], [user1], [user2], ...``.");
-		let amount = parseInt(args.shift());
+		let amount = +(args.shift());
 		if (isNaN(amount)) return user.send("Amount must be a number.");
 		let gameroom = toId(args.shift());
 		if (!Config.GameRooms.map(toId).includes(gameroom)) return user.send("Please input a valid room to add points for.");
@@ -22,13 +22,31 @@ module.exports = {
 		if (!res) return user.send("Something went wrong...");
 		return user.send('Points successfully given.');
 	},
+	setpoints: function(room, user, args) {
+		if (!this.points.room) return user.send("Bot is not in the hub room, or none is configured");
+		if (!user.can(points.room, '%')) return;
+
+		// Check input
+		if (args.length < 3) return user.send("Usage: ``;setpoints [amount], [room], [user1], [user2], ...``.");
+		let amount = +(args.shift());
+		if (isNaN(amount)) return user.send("Amount must be a number.");
+		let gameroom = toId(args.shift());
+		if (!Config.GameRooms.map(toId).includes(gameroom)) return user.send("Please input a valid room to set points for.");
+		for (let username of args) {
+			if (username.trim().length > 18) return user.send(`Invalid username: \`\`${username}\`\` (usernames are less than 19 characters long, did you make a mistake?)`);
+			if (toId(username).length < 1) return user.send(`Invalid username: \`\`${username}\`\` (usernames are more than 0 characters long, did you make a mistake?)`);
+		}
+		let res = points.setpoints(amount, args, gameroom, user.id);
+		if (!res) return user.send("Something went wrong...");
+		return user.send('Points successfully set.');
+	},
 	eventpoints: function (room, user, args) {
 		if (!points.room) return user.send("Bot is not in the hub room, or none is configured.");
 		if (!user.can(points.room, '%')) return;
 
 		// Check input
 		if (args.length < 3) return user.send("Usage: ``;eventpoints [amount], [room], [user1], [user2], ...``.");
-		let amount = parseInt(args.shift());
+		let amount = +(args.shift());
 		if (isNaN(amount)) return user.send("Amount must be a number.");
 		let gameroom = toId(args.shift());
 		if (!Config.GameRooms.map(toId).includes(gameroom)) return user.send("Please input a valid room to add points for.");
