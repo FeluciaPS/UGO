@@ -487,7 +487,7 @@ module.exports = {
 				mafia: this.points.mafia[i] || 0,
 				scavengers: this.points.scavengers[i] || 0,
 				survivor: this.points.survivor[i] || 0,
-				trickhouse: this.points.trivia[i] || 0,
+				trickhouse: this.points.trickhouse[i] || 0,
 				trivia: this.points.trivia[i] || 0,
 			}
 
