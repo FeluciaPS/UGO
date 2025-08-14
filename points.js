@@ -481,19 +481,20 @@ module.exports = {
 		let scores = [];
 		for (let i in this.names) {
 			let pscores = {
-				battledome: this.points.battledome[i] ? this.points.battledome[i] : 0,
-				boardgames: this.points.boardgames[i] ? this.points.boardgames[i] : 0,
-				gamecorner: this.points.gamecorner[i] ? this.points.gamecorner[i] : 0,
-				mafia: this.points.mafia[i] ? this.points.mafia[i] : 0,
-				scavengers: this.points.scavengers[i] ? this.points.scavengers[i] : 0,
-				survivor: this.points.survivor[i] ? this.points.survivor[i] : 0,
-				trivia: this.points.trivia[i] ? this.points.trivia[i] : 0,
+				battledome: this.points.battledome[i] || 0,
+				boardgames: this.points.boardgames[i] || 0,
+				gamecorner: this.points.gamecorner[i] || 0,
+				mafia: this.points.mafia[i] || 0,
+				scavengers: this.points.scavengers[i] || 0,
+				survivor: this.points.survivor[i] || 0,
+				trickhouse: this.points.trivia[i] || 0,
+				trivia: this.points.trivia[i] || 0,
 			}
 
 			let sobj = Object.values(pscores);
 			sobj.sort((a, b) => b - a);
-			let weighted = roundPoints(sobj[0] + sobj[1] * 1.2 + sobj[2] * 1.4 + sobj[3] * 1.6 + sobj[4] * 1.8 + sobj[5] * 2.0 + sobj[6] * 2.2);
-			let total = sobj[0] + sobj[1] + sobj[2] + sobj[3] + sobj[4] + sobj[5] + sobj[6];
+			let weighted = roundPoints(sobj[0] + sobj[1] * 1.2 + sobj[2] * 1.4 + sobj[3] * 1.6 + sobj[4] * 1.8 + sobj[5] * 2.0 + sobj[6] * 2.2 + sobj[7] * 2.4);
+			let total = sobj[0] + sobj[1] + sobj[2] + sobj[3] + sobj[4] + sobj[5] + sobj[6] + sobj[7];
 
 			scores.push([
 				i,
@@ -505,6 +506,7 @@ module.exports = {
 				pscores.mafia,
 				pscores.scavengers,
 				pscores.survivor,
+				pscores.trickhouse,
 				pscores.trivia
 			]);
 		}
@@ -531,14 +533,15 @@ module.exports = {
 		ret += `<hr><h1>Leaderboard for Ultimate Gaming Olympics</h1>`
 		ret += `<div style="overflow:auto;height:70vh"><table style="width:1000px;text-align:center" cellpadding="5" border="1">`;
 		ret += `<tr style="background-color:rgba(140,140,140,0.3)"><th>#</th><th style="width:120px">Name</th><th>Points</th><th>Total Points</th>`
-		ret += `<th>Battle Dome Points</th><th>Board Games Points</th><th>Game Corner Points</th><th>Mafia Points</th><th>Scavengers Points</th><th>Survivor Points</th><th>Trivia Points</th></tr>`
+		ret += `<th>Battle Dome Points</th><th>Board Games Points</th><th>Game Corner Points</th><th>Mafia Points</th><th>Scavengers Points</th><th>Survivor Points</th><th>Trick House Points</th><th>Trivia Points</th></tr>`
 		for (let i in scores) {
 			if (i == 500) break;
 			let id = scores[i][0];
 			let name = escape(this.names[id]);
 			let pts = scores[i][1];
 			ret += `<tr><td>${parseInt(i)+1}</td><td>${name}</td><td>${pts}</td><td>${scores[i][2]}</td>`
-			ret += `<td>${scores[i][3]}</td><td>${scores[i][4]}</td><td>${scores[i][5]}</td><td>${scores[i][6]}</td><td>${scores[i][7]}</td><td>${scores[i][8]}</td><td>${scores[i][9]}</td></tr>`;
+			ret += `<td>${scores[i][3]}</td><td>${scores[i][4]}</td><td>${scores[i][5]}</td><td>${scores[i][6]}</td><td>${scores[i][7]}</td>`
+			ret += `<td>${scores[i][8]}</td><td>${scores[i][9]}</td><td>${scores[i][10]}</td></tr>`;
 		}
 		ret += `</table></div></center></div>`;
 		return ret;
