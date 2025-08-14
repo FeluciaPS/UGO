@@ -1,3 +1,27 @@
+const https = require('https');
+let download = async function(url) {
+	return new Promise((resolve, reject) => {
+		let parts = url.split('/');
+		url = `https://pastie.io/raw/` + (parts[3] === "raw" ? parts[4] : parts[3]);
+
+		https.get(url, res => {
+			let data = '';
+
+			res.on('data', chunk => {
+				data += chunk;
+			})
+
+			res.on('end', () => {
+				resolve(data);
+			})
+
+			res.on('error', (err) => {
+				reject(err);
+			})
+		})
+	})
+}
+
 let cooldowns = {};
 module.exports = {
 	savepoints: function (room, user, args) {
@@ -37,6 +61,22 @@ module.exports = {
 			if (toId(username).length < 1) return user.send(`Invalid username: \`\`${username}\`\` (usernames are more than 0 characters long, did you make a mistake?)`);
 		}
 		let res = points.setpoints(amount, args, gameroom, user.id);
+		if (!res) return user.send("Something went wrong...");
+		return user.send('Points successfully set.');
+	},
+	setpointsfromjson: async function(room, user, args) {
+		if (!this.points.room) return user.send("Bot is not in the hub room, or none is configured");
+		if (!user.can(points.room, '%')) return;
+
+		if (args.length < 2) return user.send("Usage: ``;setpointsfromjson [room], [json/pastie.io link]``.");
+
+		let gameroom = toId(args.shift());
+		if (!Config.GameRooms.map(toId).includes(gameroom)) return user.send("Please input a valid room to set points for.");
+		args = args.join(',');
+
+		if (args.match(/https:\/\/pastie.io\//)) args = await download(args);
+
+		let res = points.setpointsfromjson(args, gameroom, user.id);
 		if (!res) return user.send("Something went wrong...");
 		return user.send('Points successfully set.');
 	},

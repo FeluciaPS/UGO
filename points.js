@@ -282,6 +282,53 @@ module.exports = {
 
 		return true;
 	},
+	setpointsfromjson: function (json, room, source) {
+		if (this.disabled) return false;
+		if (!this.room) return false;
+
+		let roomid = toId(room);
+
+		for (let i of Config.GameRooms) {
+			if (toId(i) === roomid) room = i;
+		}
+		if (this.bosshp === undefined) this.bosshp = maxHP;
+
+		let now = new Date(Date.now());
+		if (now.getDate() != day) {
+			this.resetDaily();
+			day = now.getDate();
+			if (spotlights[now.getDate()]) points.room.send(`/wall Spotlight day for ${spotlights[now.getDate()]} started!`)
+		}
+		let spotlight = toId(roomid) === toId(spotlights[now.getDate()]);
+		if (spotlights[day] === true) spotlight = this.bosshp <= 0;
+
+		try {
+			json = JSON.parse(json);
+		}
+		catch (e) {
+			this.room.send(`/modnote [${source}] gave invalid json for room ${roomid}`);
+			return false;
+		}
+
+		for (let i in json) {
+			let userid = toId(i);
+			this.points[roomid][userid] = json[i];
+
+			if (Users[userid]) this.names[userid] = Users[userid].name
+			if (!this.names[userid]) this.names[userid] = i;
+		}
+
+		if (this.bosshp < 0) this.bosshp = 0;
+		this.save(roomid);
+		let users = Object.keys(users).map(toId);
+		while (users.length) {
+			let part = users.slice(0, 10);
+			let users = users.slice(10);
+
+			this.room.send(`/modnote Points manually updated for ${part.map(x => '[' + toId(x) + ']').join(', ')} in ${room} by [${source}]`)
+		}
+		return true;
+	},
 	addpoints: function (amount, users, room, source) {
 		if (this.disabled) return false;
 		if (!this.room) return false;
