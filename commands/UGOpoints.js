@@ -117,7 +117,7 @@ module.exports = {
 	lb: 'leaderboard',
 	leaderboard: function (room, user, args) {
 		if (room.id == points.room.id && user.can(points.room, '+')) {
-			return points.room.send(`/addhtmlbox <button name="send" value="/botmsg ugo, global, lb">View the UGO Leaderboard</button>`);
+			return points.room.send(`/addhtmlbox <button class="button" name="send" value="/botmsg ugo, global, lb">View the UGO Leaderboard</button>`);
 		}
 		return points.room.send(`/sendhtmlpage ${user.id}, board, ${points.buildLeaderboard(args[0] ? toId(args[0]) : false)}`);
 	},
