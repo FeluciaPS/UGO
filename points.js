@@ -214,10 +214,11 @@ module.exports = {
 			this.addpoints(60, winners, "mafia", source);
 			this.addpoints(30, losers, "mafia", source);
 		}
-
-		this.addpoints(point_scalings.win[count], winners, "mafia", source);
-		this.addpoints(point_scalings.play[count], losers, "mafia", source);
-		this.addpoints(point_scalings.host[count], host, "mafia", source);
+		else {
+			this.addpoints(point_scalings.win[count], winners, "mafia", source);
+			this.addpoints(point_scalings.play[count], losers, "mafia", source);
+			this.addpoints(point_scalings.host[count], host, "mafia", source);
+		}
 	},
 	addhunt: function (hosts, users, type = "addhunt", source) {
 		if (this.disabled) return false;
