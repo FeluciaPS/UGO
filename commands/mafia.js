@@ -38,7 +38,7 @@ let buildMafiaGamesPage = function() {
     ret += `<table><tr><th>id</th><th>Date/Time</th><th>Delete</th></tr>`;
     for (let i in mafia_gamedata) {
         let dt = mafia_gamedata[i];
-        ret += `<tr><td>${i}</td><td><a href="/view-chatlog-mafia--${dt.date}--time-${toId(dt.timestamp)}">${dt.date} ${dt.timestamp}</a></td><td><button name="send" value="/botmsg ugo, global, deletemafiagame ${i}">Delete</buton></td></tr>`;
+        ret += `<tr><td>${i}</td><td><a href="/view-chatlog-mafia--${dt.date}--time-${toId(dt.timestamp)}">${dt.date} ${dt.timestamp}</a></td><td><button name="send" value="/botmsg ugo, global, deletemafiagame ${i}">Delete</button></td></tr>`;
     }
     ret += `</center></div>`
     return ret;
