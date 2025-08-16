@@ -71,6 +71,7 @@ module.exports = {
 		if (isNaN(players)) return user.send("Player count must be a number.");
         if (players < 4) return user.send("Mafia games require at least 4 players to award points");
 		if (isNaN(duration)) return user.send("Duration must be a number.");
+        let host = args.shift();
 
         if (!args.includes("winners") || !args.includes("losers")) return user.send("Mafia points must include winners and losers");
         let winners = [];
@@ -103,6 +104,7 @@ module.exports = {
 		let players = +(args.shift());
         let duration = +(args.shift());
 		if (isNaN(players)) return user.send("Player count must be a number.");
+        if (players < 4) return user.send("Mafia games require at least 4 players to award points");
 		if (isNaN(duration)) return user.send("Duration must be a number.");
         let host = args.shift();
 
