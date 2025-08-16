@@ -41,6 +41,7 @@ let buildMafiaGamesPage = function() {
         ret += `<tr><td>${i}</td><td><a href="/view-chatlog-mafia--${dt.date}--time-${toId(dt.timestamp)}">${dt.date} ${dt.timestamp}</a></td><td><button name="send" value="/botmsg ugo, global, deletemafiagame ${i}">Delete</buton></td></tr>`;
     }
     ret += `</center></div>`
+    return ret;
 }
 
 module.exports = {
