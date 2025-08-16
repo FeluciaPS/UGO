@@ -40,7 +40,7 @@ let buildMafiaGamesPage = function() {
         let dt = mafia_gamedata[i];
         ret += `<tr><td>${i}</td><td><a href="/view-chatlog-mafia--${dt.date}--time-${toId(dt.timestamp)}">${dt.date} ${dt.timestamp}</a></td><td><button name="send" value="/botmsg ugo, global, deletemafiagame ${i}">Delete</button></td></tr>`;
     }
-    ret += `</center></div>`
+    ret += `</table></center></div>`
     return ret;
 }
 
