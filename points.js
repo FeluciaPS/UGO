@@ -239,7 +239,7 @@ module.exports = {
 			}
 
 			if (Users[userid]) this.names[userid] = Users[userid].name
-			if (!this.names[userid]) this.names[userid] = users[i];
+			if (!this.names[userid]) this.names[userid] = user;
 		}
 
 		if (this.bosshp < 0) this.bosshp = 0;
