@@ -210,15 +210,18 @@ module.exports = {
 		let spotlight = "mafia" === toId(spotlights[day]);
 		if (spotlights[day] === true) spotlight = this.bosshp <= 0;
 
+		let success = true;
 		if (fish) {
-			this.addpoints(60, winners, "mafia", source);
-			this.addpoints(30, losers, "mafia", source);
+			success = success && this.addpoints(60, winners, "mafia", source);
+			success = success && this.addpoints(30, losers, "mafia", source);
 		}
 		else {
-			this.addpoints(point_scalings.win[count], winners, "mafia", source);
-			this.addpoints(point_scalings.play[count], losers, "mafia", source);
-			this.addpoints(point_scalings.host[count], host, "mafia", source);
+			success = success && this.addpoints(point_scalings.win[count], winners, "mafia", source);
+			success = success && this.addpoints(point_scalings.play[count], losers, "mafia", source);
+			success = success && this.addpoints(point_scalings.host[count], host, "mafia", source);
 		}
+
+		return success;
 	},
 	addhunt: function (hosts, users, type = "addhunt", source) {
 		if (this.disabled) return false;
