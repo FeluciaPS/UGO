@@ -153,11 +153,11 @@ module.exports = {
 		let ret = [];
 		for (let i in data) {
 			let userid = toId(data[i][0]);
-			let amount = Math.ceil(0.5 * parseInt(data[i][1])); // Every official		1 point per 2 triv points (rounded up)
-			if (data[i] >= 5) amount += 2; // Every official		2 bonus points upon getting 5 triv points
-			if (i == 0) amount += 10; // Every official winners		10 / 5 / 3
-			if (i == 1) amount += 5;
-			if (i == 2) amount += 3;
+			let amount = Math.ceil(1 * parseInt(data[i][1])); // Every official		1 point per 2 triv points (rounded up)
+			if (data[i] >= 5) amount += 3; // Every other official		3 bonus points upon getting 5 triv points
+			if (i == 0) amount += 20; // Every official winners		20 / 10 / 5
+			if (i == 1) amount += 10;
+			if (i == 2) amount += 5;
 			if (!this.points.trivia[userid]) {
 				this.points.trivia[userid] = 0;
 				this.daypoints.trivia[userid] = 0;
@@ -210,18 +210,15 @@ module.exports = {
 		let spotlight = "mafia" === toId(spotlights[day]);
 		if (spotlights[day] === true) spotlight = this.bosshp <= 0;
 
-		let success = true;
 		if (fish) {
-			success = success && this.addpoints(60, winners, "mafia", source);
-			success = success && this.addpoints(30, losers, "mafia", source);
+			this.addpoints(60, winners, "mafia", source);
+			this.addpoints(30, losers, "mafia", source);
 		}
 		else {
-			success = success && this.addpoints(point_scalings.win[count], winners, "mafia", source);
-			success = success && this.addpoints(point_scalings.play[count], losers, "mafia", source);
-			success = success && this.addpoints(point_scalings.host[count], host, "mafia", source);
+			this.addpoints(point_scalings.win[count], winners, "mafia", source);
+			this.addpoints(point_scalings.play[count], losers, "mafia", source);
+			this.addpoints(point_scalings.host[count], host, "mafia", source);
 		}
-
-		return success;
 	},
 	addhunt: function (hosts, users, type = "addhunt", source) {
 		if (this.disabled) return false;
