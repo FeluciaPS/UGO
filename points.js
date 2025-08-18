@@ -211,17 +211,46 @@ module.exports = {
 		if (spotlights[day] === true) spotlight = this.bosshp <= 0;
 
 		let success = true;
-		if (fish) {
-			success = success && this.addpoints(60, winners, "mafia", source);
-			success = success && this.addpoints(30, losers, "mafia", source);
-		}
-		else {
-			success = success && this.addpoints(point_scalings.win[count], winners, "mafia", source);
-			success = success && this.addpoints(point_scalings.play[count], losers, "mafia", source);
-			success = success && this.addpoints(point_scalings.host[count], host, "mafia", source);
+		let winner_points = fish ? 60 : point_scalings.win[count];
+		let loser_points = fish ? 30 : point_scalings.play[count];
+		let host_points = fish ? 0 : point_scalings.host[count];
+
+		let users = [host].concat(winners).concat(losers);
+		for (let user of users) {
+			let user_points = 0;
+			if (host === user) user_points += host_points;
+			if (winners.includes(user)) user_points += winner_points;
+			if (losers.includes(user)) user_points += loser_points;
+			if (!user_points) continue;
+			let userid = toId(user);
+
+			if (!this.points.mafia[userid]) {
+				this.points.mafia[userid] = 0;
+				this.daypoints.mafia[userid] = 0;
+			}
+
+			this.points.mafia[userid] += roundPoints(amount * (spotlight ? 1.5 : 1));
+			this.daypoints.mafia[userid] += roundPoints(amount * (spotlight ? 1.5 : 1));
+			this.bosshp -= roundPoints(amount * (spotlight ? 1.5 : 1));
+			if (this.daypoints.mafia[userid] > pointcap.mafia + (spotlight ? 50 : 0)) {
+				let differential = this.daypoints.mafia[userid] - pointcap.mafia + (spotlight ? 50 : 0);
+				this.points.mafia[userid] -= differential;
+				this.daypoints.mafia[userid] -= differential;
+			}
+
+			if (Users[userid]) this.names[userid] = Users[userid].name
+			if (!this.names[userid]) this.names[userid] = users[i];
 		}
 
-		return success;
+		if (this.bosshp < 0) this.bosshp = 0;
+		this.save("mafia");
+
+		let hoststring = fish ? `Host (${host_points}): [${toId(host)}]. ` : "";
+		let winnerstring = `Winners (${winner_points}): ${winners.map(x => "[" + toId(x) + "]").join(', ')}. `;
+		let loserstring = `Participants (${loser_points}): ${losers.map(x => "[" + toId(x) + "]").join(', ')}`;
+
+		this.room.send(`/mn Mafia${fish ? " official" : ""} points awarded by [${source}]. ${hoststring}${winnerstring}${loserstring}`)
+		return true;
 	},
 	addhunt: function (hosts, users, type = "addhunt", source) {
 		if (this.disabled) return false;
