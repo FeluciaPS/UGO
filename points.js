@@ -210,7 +210,6 @@ module.exports = {
 		let spotlight = "mafia" === toId(spotlights[day]);
 		if (spotlights[day] === true) spotlight = this.bosshp <= 0;
 
-		let success = true;
 		let winner_points = fish ? 60 : point_scalings.win[count];
 		let loser_points = fish ? 30 : point_scalings.play[count];
 		let host_points = fish ? 0 : point_scalings.host[count];
@@ -245,7 +244,7 @@ module.exports = {
 		if (this.bosshp < 0) this.bosshp = 0;
 		this.save("mafia");
 
-		let hoststring = fish ? `Host (${host_points}): [${toId(host)}]. ` : "";
+		let hoststring = fish ? "" : `Host (${host_points}): [${toId(host)}]. `;
 		let winnerstring = `Winners (${winner_points}): ${winners.map(x => "[" + toId(x) + "]").join(', ')}. `;
 		let loserstring = `Participants (${loser_points}): ${losers.map(x => "[" + toId(x) + "]").join(', ')}`;
 
