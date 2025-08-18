@@ -229,9 +229,9 @@ module.exports = {
 				this.daypoints.mafia[userid] = 0;
 			}
 
-			this.points.mafia[userid] += roundPoints(amount * (spotlight ? 1.5 : 1));
-			this.daypoints.mafia[userid] += roundPoints(amount * (spotlight ? 1.5 : 1));
-			this.bosshp -= roundPoints(amount * (spotlight ? 1.5 : 1));
+			this.points.mafia[userid] += roundPoints(user_points * (spotlight ? 1.5 : 1));
+			this.daypoints.mafia[userid] += roundPoints(user_points * (spotlight ? 1.5 : 1));
+			this.bosshp -= roundPoints(user_points * (spotlight ? 1.5 : 1));
 			if (this.daypoints.mafia[userid] > pointcap.mafia + (spotlight ? 50 : 0)) {
 				let differential = this.daypoints.mafia[userid] - pointcap.mafia + (spotlight ? 50 : 0);
 				this.points.mafia[userid] -= differential;
