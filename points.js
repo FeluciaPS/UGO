@@ -256,10 +256,10 @@ module.exports = {
 		if (!this.room) return false;
 
 		let point_scalings = {
-			"addhunt": [50, 42, 34, 26, 20, 15, 10],
-			"addminifishhunt": [70, 60, 50, 40, 30, 25, 20],
-			"addfishhunt": [100, 88, 75, 63, 50, 40, 30],
-			"addtwisthunt": [150, 135, 120, 95, 80, 65, 40],
+			"addhunt": [65, 55, 45, 35, 27, 20, 13],
+			"addminifishhunt": [90, 78, 65, 50, 40, 32, 25],
+			"addfishhunt": [130, 115, 95, 80, 65, 52, 40],
+			"addtwisthunt": [200, 175, 150, 125, 100, 80, 50],
 			"addodysseyhunt": [200, 175, 150, 125, 100, 80, 50]
 		}
 
@@ -278,7 +278,7 @@ module.exports = {
 		let spotlight = "scavengers" === toId(spotlights[day]);
 		if (spotlights[day] === true) spotlight = this.bosshp <= 0;
 
-		this.addpoints(46, hosts, "scavengers", source); 
+		this.addpoints(60, hosts, "scavengers", source); 
 
 		let ret = [];
 		for (let i in users) {
