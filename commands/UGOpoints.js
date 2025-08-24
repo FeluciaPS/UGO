@@ -2,7 +2,7 @@ const https = require('https');
 let download = async function(url) {
 	return new Promise((resolve, reject) => {
 		let parts = url.split('/');
-		url = `https://pastie.io/raw/` + (parts[3] === "raw" ? parts[4] : parts[3]);
+		if (url.includes('pastie')) url = `https://pastie.io/raw/` + (parts[3] === "raw" ? parts[4] : parts[3]);
 
 		https.get(url, res => {
 			let data = '';
@@ -78,7 +78,7 @@ module.exports = {
 		if (!Config.GameRooms.map(toId).includes(gameroom)) return user.send("Please input a valid room to set points for.");
 		args = args.join(',');
 
-		if (args.match(/https:\/\/pastie.io\//)) args = await download(args);
+		if (args.match(/https:\/\/pastie.io\//) || args.includes('partbot.partman.dev/paste/')) args = await download(args);
 
 		let res = points.setpointsfromjson(args, gameroom, user.id);
 		if (!res) return user.send("Something went wrong...");
