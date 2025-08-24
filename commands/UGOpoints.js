@@ -2,7 +2,7 @@ const https = require('https');
 let download = async function(url) {
 	return new Promise((resolve, reject) => {
 		let parts = url.split('/');
-		url = `https://pastie.io/raw/` + (parts[3] === "raw" ? parts[4] : parts[3]);
+		if (url.includes('pastie')) url = `https://pastie.io/raw/` + (parts[3] === "raw" ? parts[4] : parts[3]);
 
 		https.get(url, res => {
 			let data = '';
